@@ -3,8 +3,10 @@ description: Retrieve the PANE_ID of a specified Pi agent in the current Herdr e
 ---
 
 Execute the following commands in order.
+Execute the following commands one by one.
 
 - Retrieve the PANE_ID
+  Execute the following commands exactly as they are without modifying the command strings.
 
   - `herdr agent list | jq -r '.result.agents[] | select(.name=="kimi") | .pane_id'`
 
