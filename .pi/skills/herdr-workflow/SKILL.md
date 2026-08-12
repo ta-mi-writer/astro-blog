@@ -11,9 +11,9 @@ This skill defines the operational patterns for coordinating multiple Pi agent p
 
 The workflow uses three specialized agents:
 
-- **`nemotron-blog`** — Commander / Orchestrator
-- **`kimi-blog`** — Planner / Reviewer
-- **`laguna-blog`** — Coder
+- **`nemotron`** — Commander / Orchestrator
+- **`kimi`** — Planner / Reviewer
+- **`laguna`** — Coder
 
 The agents must maintain clearly separated responsibilities. The Commander owns user alignment, coordination, delegation, and final completion decisions. Kimi owns detailed implementation planning and code review. Laguna owns implementation and verification.
 
@@ -23,15 +23,15 @@ The Commander must not allow the workflow to drift into an unstructured multi-ag
 
 # Pane Layout & Roles
 
-## `nemotron-blog` — Commander / Orchestrator
+## `nemotron` — Commander / Orchestrator
 
 - **Layout**: Left half pane (manually started by user).
 - Receives and clarifies the user's request.
 - Establishes shared understanding with the user before planning begins.
 - Defines the task scope and acceptance criteria.
-- Delegates planning work to `kimi-blog`.
+- Delegates planning work to `kimi`.
 - Validates Kimi's implementation plan.
-- Delegates implementation work to `laguna-blog`.
+- Delegates implementation work to `laguna`.
 - Coordinates review and correction cycles.
 - Decides when the task is complete.
 - Reports the final result to the user.
@@ -42,12 +42,12 @@ The Commander should normally coordinate the work rather than implementing the t
 
 ---
 
-## `kimi-blog` — Planner & Reviewer
+## `kimi` — Planner & Reviewer
 
 - **Layout**: Top-Right pane.
 - **Model**: `preview/Kimi-K2.7-Code` (via `sakura` provider).
 - Investigates the repository when necessary.
-- Produces detailed implementation plans for `laguna-blog`.
+- Produces detailed implementation plans for `laguna`.
 - Reviews Laguna's implementation after implementation and verification.
 - Provides exact, actionable corrections when a review is rejected.
 
@@ -57,7 +57,7 @@ When creating a plan for Laguna, Kimi must minimize the amount of design judgmen
 
 ---
 
-## `laguna-blog` — Coder
+## `laguna` — Coder
 
 - **Layout**: Bottom-Right pane.
 - **Model**: `poolside/laguna-xs-2.1:free`.
@@ -73,7 +73,7 @@ If a requested change appears to require a significant departure from the approv
 
 # Initialization / Setup
 
-When `nemotron-blog` starts an orchestration task, it should set up the team layout and start the required agent panes step by step.
+When `nemotron` starts an orchestration task, it should set up the team layout and start the required agent panes step by step.
 
 ## 1. Identify & Rename Commander Pane
 
@@ -83,10 +83,10 @@ When `nemotron-blog` starts an orchestration task, it should set up the team lay
 herdr agent list
 ```
 
-2. Rename the commander pane to `nemotron-blog`:
+2. Rename the commander pane to `nemotron`:
 
 ```bash
-herdr agent rename <PANE_ID> nemotron-blog
+herdr agent rename <PANE_ID> nemotron
 ```
 
 ---
@@ -113,16 +113,16 @@ Note the `PANE_ID`s for both the top-right and bottom-right panes.
 
 ## 3. Start Agent Processes in Panes
 
-### Start `kimi-blog` (Top-Right Pane)
+### Start `kimi` (Top-Right Pane)
 
 ```bash
-herdr agent start kimi-blog --kind pi --pane <TOP_RIGHT_PANE_ID> -- --provider sakura --model preview/Kimi-K2.7-Code -ns --skill ~/.pi/agent/skills/herdr --skill .pi/skills/herdr-workflow -np
+herdr agent start kimi --kind pi --pane <TOP_RIGHT_PANE_ID> -- --provider sakura --model preview/Kimi-K2.7-Code -ns --skill ~/.pi/agent/skills/herdr --skill .pi/skills/herdr-workflow -np
 ```
 
-### Start `laguna-blog` (Bottom-Right Pane)
+### Start `laguna` (Bottom-Right Pane)
 
 ```bash
-herdr agent start laguna-blog --kind pi --pane <BOTTOM_RIGHT_PANE_ID> -- --model poolside/laguna-xs-2.1:free -ns --skill ~/.pi/agent/skills/herdr --skill .pi/skills/herdr-workflow -np
+herdr agent start laguna --kind pi --pane <BOTTOM_RIGHT_PANE_ID> -- --model poolside/laguna-xs-2.1:free -ns --skill ~/.pi/agent/skills/herdr --skill .pi/skills/herdr-workflow -np
 ```
 
 ---
@@ -290,12 +290,12 @@ The Commander should provide Kimi with:
 - acceptance criteria,
 - and any relevant repository context already discovered.
 
-The Commander should explicitly tell Kimi to create a plan for `laguna-blog`, which is the lower-parameter implementation agent.
+The Commander should explicitly tell Kimi to create a plan for `laguna`, which is the lower-parameter implementation agent.
 
 Example:
 
 ```text
-Create a detailed implementation plan for laguna-blog.
+Create a detailed implementation plan for laguna.
 
 The plan must be specific enough that Laguna can implement it
 without making significant design decisions on its own.
@@ -990,9 +990,9 @@ The Commander should avoid declaring the task complete while it remains in any i
 
 ---
 
-# Plan Creation Rules for `kimi-blog`
+# Plan Creation Rules for `kimi`
 
-When instructing Kimi to create an implementation plan for `laguna-blog` (a low-parameter model):
+When instructing Kimi to create an implementation plan for `laguna` (a low-parameter model):
 
 - **High Granularity**: Break tasks down into clear, numbered step-by-step instructions.
 - **Exact Specifications**: Include exact file paths, relevant symbols, search strings where useful, and expected code-level changes.
@@ -1006,7 +1006,7 @@ When instructing Kimi to create an implementation plan for `laguna-blog` (a low-
 
 ---
 
-# Review Rules for `kimi-blog`
+# Review Rules for `kimi`
 
 When reviewing Laguna's implementation:
 
