@@ -124,8 +124,15 @@ Tab 1: Nemotron
 
 Create a new tab and use its returned root pane for the `kimi` agent.
 
+First, create the new tab and capture the returned root pane ID:
+
 ```bash
 PANE_ID=$(herdr tab create --workspace "$HERDR_WORKSPACE_ID" --label "Kimi" --cwd "$PWD" --no-focus | jq -r '.result.root_pane.pane_id')
+```
+
+Then start the `kimi` agent in the returned root pane:
+
+```bash
 herdr agent start kimi --kind pi --pane "$PANE_ID" -- --provider sakura --model preview/Kimi-K2.7-Code -ns --skill ~/.pi/agent/skills/herdr --skill .pi/skills/herdr-workflow -np
 ```
 
@@ -144,8 +151,15 @@ Do not insert `sleep` after tab creation. `herdr tab create` returns the root pa
 
 Create another new tab and use its returned root pane for the `laguna` agent.
 
+First, create the new tab and capture the returned root pane ID:
+
 ```bash
 PANE_ID=$(herdr tab create --workspace "$HERDR_WORKSPACE_ID" --label "Laguna" --cwd "$PWD" --no-focus | jq -r '.result.root_pane.pane_id')
+```
+
+Then start the `laguna` agent in the returned root pane:
+
+```bash
 herdr agent start laguna --kind pi --pane "$PANE_ID" -- --model poolside/laguna-xs-2.1:free -ns --skill ~/.pi/agent/skills/herdr --skill .pi/skills/herdr-workflow -np
 ```
 
