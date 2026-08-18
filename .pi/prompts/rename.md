@@ -9,3 +9,6 @@ Please perform the following steps to rename this agent in Herdr:
 
 2. Using the `PANE_ID` obtained from Step 1, run the following command to rename this Pi agent in Herdr to `nemotron`:
    `herdr agent rename <PANE_ID> nemotron`
+
+3. Send the following prompt to the renamed `nemotron` agent to switch its model:
+   `herdr agent prompt nemotron "/model nvidia/nemotron-3-ultra-550b-a55b:free"`
