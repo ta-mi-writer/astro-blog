@@ -1,5 +1,5 @@
 ---
-name: herdr-workflow
+name: herdr-workflow-pane
 description: Coordinate multiple Pi agent panes inside Herdr using a structured user-alignment, planning, implementation, review, correction, and completion workflow.
 ---
 

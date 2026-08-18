@@ -133,7 +133,7 @@ PANE_ID=$(herdr tab create --workspace "$HERDR_WORKSPACE_ID" --label "Kimi" --cw
 Then start the `kimi` agent in the returned root pane:
 
 ```bash
-herdr agent start kimi --kind pi --pane "$PANE_ID" -- --provider sakura --model preview/Kimi-K2.7-Code -ns --skill ~/.pi/agent/skills/herdr --skill .pi/skills/herdr-workflow -np
+herdr agent start kimi --kind pi --pane "$PANE_ID" -- --provider sakura --model preview/Kimi-K2.7-Code -ns --skill ~/.pi/agent/skills/herdr --skill .pi/skills/herdr-workflow --skill .pi/skills/hallmark -np
 ```
 
 The result should be:
@@ -160,7 +160,7 @@ PANE_ID=$(herdr tab create --workspace "$HERDR_WORKSPACE_ID" --label "Laguna" --
 Then start the `laguna` agent in the returned root pane:
 
 ```bash
-herdr agent start laguna --kind pi --pane "$PANE_ID" -- --model poolside/laguna-xs-2.1:free -ns --skill ~/.pi/agent/skills/herdr --skill .pi/skills/herdr-workflow -np
+herdr agent start laguna --kind pi --pane "$PANE_ID" -- --model poolside/laguna-xs-2.1:free -ns --skill ~/.pi/agent/skills/herdr --skill .pi/skills/herdr-workflow --skill .pi/skills/hallmark -np
 ```
 
 The result should be:
