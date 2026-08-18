@@ -1,13 +1,13 @@
 ---
 name: herdr-workflow
-description: Coordinate multiple Pi agents across dedicated Herdr tabs using a structured user-alignment, planning, implementation, review, correction, and completion workflow.
+description: Coordinate multiple Pi agent panes inside Herdr using a structured user-alignment, planning, implementation, review, correction, and completion workflow.
 ---
 
 ---
 
 # Herdr Multi-Agent Workflow
 
-This skill defines the operational patterns for coordinating multiple Pi agents across dedicated Herdr tabs in a project.
+This skill defines the operational patterns for coordinating multiple Pi agent panes inside Herdr in a project.
 
 The workflow uses three specialized agents:
 
@@ -21,21 +21,11 @@ The Commander must not allow the workflow to drift into an unstructured multi-ag
 
 ---
 
-# Tab Layout & Roles
-
-The workflow uses three dedicated tabs, with exactly one root pane in each tab.
-The tab assignment is fixed by agent role:
-
-- **Tab 1 — `Nemotron`**: Commander / Orchestrator
-- **Tab 2 — `Kimi`**: Planner / Reviewer
-- **Tab 3 — `Laguna`**: Coder
-
-The current tab is reused for `nemotron`. Two additional tabs are created for `kimi` and `laguna`.
+# Pane Layout & Roles
 
 ## `nemotron` — Commander / Orchestrator
 
-- **Layout**: Current tab, with its existing root pane.
-- **Tab label**: `Nemotron`.
+- **Layout**: Left half pane (manually started by user).
 - Receives and clarifies the user's request.
 - Establishes shared understanding with the user before planning begins.
 - Defines the task scope and acceptance criteria.
@@ -54,7 +44,7 @@ The Commander should normally coordinate the work rather than implementing the t
 
 ## `kimi` — Planner & Reviewer
 
-- **Layout**: Tab 2 (`Kimi`), with one root pane.
+- **Layout**: Top-Right pane.
 - **Model**: `preview/Kimi-K2.7-Code` (via `sakura` provider).
 - Investigates the repository when necessary.
 - Produces detailed implementation plans for `laguna`.
@@ -69,7 +59,7 @@ When creating a plan for Laguna, Kimi must minimize the amount of design judgmen
 
 ## `laguna` — Coder
 
-- **Layout**: Tab 3 (`Laguna`), with one root pane.
+- **Layout**: Bottom-Right pane.
 - **Model**: `poolside/laguna-xs-2.1:free`.
 - Implements approved plans produced by Kimi.
 - Runs required checks and tests.
@@ -83,99 +73,57 @@ If a requested change appears to require a significant departure from the approv
 
 # Initialization / Setup
 
-When `nemotron` starts an orchestration task, it should set up the three-tab team layout and start the required agents step by step.
+When `nemotron` starts an orchestration task, it should set up the team layout and start the required agent panes step by step.
 
-The layout must remain: one agent per tab, with one root pane in each tab.
-Do not split panes to construct the team layout.
-Do not use `sleep` loops or other blind polling to wait for Herdr state changes. Use Herdr commands that return the required identifiers directly, and use `--wait` for agent execution synchronization where supported.
+## 1. Identify & Rename Commander Pane
 
-## 1. Rename the Current Tab and Commander Agent
-
-The current tab is used as the `nemotron` tab. The calling context automatically provides `$HERDR_TAB_ID` for the current tab.
-
-1. Rename the current tab to `Nemotron`:
-
-```bash
-herdr tab rename "$HERDR_TAB_ID" Nemotron
-```
-
-2. Check the current agent list to identify the current commander `PANE_ID`:
+1. Check the current pane list to identify the current commander `PANE_ID`:
 
 ```bash
 herdr agent list
 ```
 
-3. Rename the commander agent to `nemotron`:
+2. Rename the commander pane to `nemotron`:
 
 ```bash
 herdr agent rename <PANE_ID> nemotron
 ```
 
-The result should be:
-
-```text
-Tab 1: Nemotron
-└── nemotron
-```
-
 ---
 
-## 2. Create the `Kimi` Tab and Start the Agent
+## 2. Split Panes for Layout Construction
 
-Create a new tab and use its returned root pane for the `kimi` agent.
+1. Split the current pane to the right to create the right half area:
 
 ```bash
-PANE_ID=$(herdr tab create --workspace "$HERDR_WORKSPACE_ID" --label "Kimi" --cwd "$PWD" --no-focus | jq -r '.result.root_pane.pane_id')
-herdr agent start kimi --kind pi --pane "$PANE_ID" -- --provider sakura --model preview/Kimi-K2.7-Code -ns --skill ~/.pi/agent/skills/herdr --skill .pi/skills/herdr-workflow -np
+herdr pane split --current --direction right --cwd "$PWD" --no-focus
 ```
 
-The result should be:
+Note the returned `PANE_ID` for the newly created right pane.
 
-```text
-Tab 2: Kimi
-└── kimi
-```
-
-Do not insert `sleep` after tab creation. `herdr tab create` returns the root pane identifier used by the subsequent `herdr agent start` command.
-
----
-
-## 3. Create the `Laguna` Tab and Start the Agent
-
-Create another new tab and use its returned root pane for the `laguna` agent.
+2. Split the newly created right pane vertically to form the top-right and bottom-right panes:
 
 ```bash
-PANE_ID=$(herdr tab create --workspace "$HERDR_WORKSPACE_ID" --label "Laguna" --cwd "$PWD" --no-focus | jq -r '.result.root_pane.pane_id')
-herdr agent start laguna --kind pi --pane "$PANE_ID" -- --model poolside/laguna-xs-2.1:free -ns --skill ~/.pi/agent/skills/herdr --skill .pi/skills/herdr-workflow -np
+herdr pane split --pane <RIGHT_PANE_ID> --direction down --cwd "$PWD" --no-focus
 ```
 
-The result should be:
-
-```text
-Tab 3: Laguna
-└── laguna
-```
-
-Do not insert `sleep` after tab creation.
+Note the `PANE_ID`s for both the top-right and bottom-right panes.
 
 ---
 
-## 4. Final Layout
+## 3. Start Agent Processes in Panes
 
-After initialization, the team layout should be:
+### Start `kimi` (Top-Right Pane)
 
-```text
-Tab 1: Nemotron
-└── nemotron
-
-Tab 2: Kimi
-└── kimi
-
-Tab 3: Laguna
-└── laguna
+```bash
+herdr agent start kimi --kind pi --pane <TOP_RIGHT_PANE_ID> -- --provider sakura --model preview/Kimi-K2.7-Code -ns --skill ~/.pi/agent/skills/herdr --skill .pi/skills/herdr-workflow -np
 ```
 
-The physical tab placement must not affect the workflow. Agent communication and delegation should use agent names rather than assumptions about tab position.
+### Start `laguna` (Bottom-Right Pane)
+
+```bash
+herdr agent start laguna --kind pi --pane <BOTTOM_RIGHT_PANE_ID> -- --model poolside/laguna-xs-2.1:free -ns --skill ~/.pi/agent/skills/herdr --skill .pi/skills/herdr-workflow -np
+```
 
 ---
 
@@ -800,7 +748,7 @@ Do not report a task as complete when required verification or review is still p
 
 ---
 
-# Inter-Agent Communication & Synchronization
+# Inter-Pane Communication & Synchronization
 
 Use Herdr's event-driven execution model.
 
