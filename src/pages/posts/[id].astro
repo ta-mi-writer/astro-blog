@@ -1,5 +1,5 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -10,10 +10,9 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,7 +24,7 @@ const { Content } = await render(post);
       <p>
         Published:
         <time datetime={post.data.pubDate.toISOString()}>
-          {post.data.pubDate.toLocaleDateString('en-US', {
+          {post.data.pubDate.toLocaleDateString('ja-JP', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -36,7 +35,7 @@ const { Content } = await render(post);
         <p>
           Updated:
           <time datetime={post.data.updatedDate.toISOString()}>
-            {post.data.updatedDate.toLocaleDateString('en-US', {
+            {post.data.updatedDate.toLocaleDateString('ja-JP', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
@@ -44,7 +43,33 @@ const { Content } = await render(post);
           </time>
         </p>
       )}
-      <Content />
+      {post.data.description && (
+        <p>{post.data.description}</p>
+      )}
+      {post.data.thumbnailUrl && (
+        <img src={post.data.thumbnailUrl} alt={post.data.title} width="300" />
+      )}
+      {post.data.videoUrl && (
+        <a href={post.data.videoUrl} target="_blank" rel="noopener">
+          動画を見る
+        </a>
+      )}
+      {post.data.fanzaUrl && (
+        <a href={post.data.fanzaUrl} target="_blank" rel="noopener">
+          FANZA作品ページ
+        </a>
+      )}
+      <div class="fanza-affiliate">
+        <h2>FANZA TVで視聴</h2>
+        <p>FANZA TVに新規登録すると、最初の1ヶ月が無料になるキャンペーンを実施中です。</p>
+        <a href="https://www.fanza-tv.com/signup?aff=example" target="_blank" rel="noopener">
+          FANZA TV無料登録はこちら
+        </a>
+        <p>
+          当サイトはFANZA TVのアフィリエイトプログラムに参加しています。
+        </p>
+      </div>
+      <section>{post.body}</section>
     </article>
   </body>
 </html>

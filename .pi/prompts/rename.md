@@ -11,4 +11,4 @@ Please perform the following steps to rename this agent in Herdr:
    `herdr agent rename <PANE_ID> nemotron`
 
 3. Send the following prompt to the renamed `nemotron` agent to switch its model:
-   `herdr agent prompt nemotron "/model nvidia/nemotron-3-ultra-550b-a55b:free"`
+   `herdr agent prompt nemotron "/model  poolside/laguna-s-2.1:free"`
