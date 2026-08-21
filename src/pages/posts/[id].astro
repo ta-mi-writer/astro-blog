@@ -26,7 +26,7 @@ const { Content } = await render(post);
     <article>
       <h1>{post.data.title}</h1>
       <p>
-        Published:
+        公開日:
         <time datetime={post.data.pubDate.toISOString()}>
           {post.data.pubDate.toLocaleDateString('ja-JP', {
             year: 'numeric',
