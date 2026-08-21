@@ -2,9 +2,9 @@
 title: "【Tube Corporate】注目の新作ダミー作品レビュー"
 pubDate: 2025-01-20
 description: "FANZA TVで配信中のTube Corporate傘下ダミー作品を紹介します。"
-thumbnailUrl: "https://pics.dmm.co.jp/digital/video/abcd000/abcd000pl.jpg"
-videoUrl: "https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=abcd000/"
-fanzaUrl: "https://www.fanza.co.jp/digital/videoa/-/detail/=/cid=abcd000/?aff=example"
+thumbnailUrl: "https://awsimgsrc.dmm.co.jp/dig_white/digital/video/jul00664/jul00664jp-1.jpg"
+videoUrl: "https://txxx.com/videos/21751727/535-deezeoo-touy-roo-hez/"
+fanzaUrl: "https://tv.dmm.co.jp/vod/?content=jul00664"
 ---
 
 # 【Tube Corporate】注目の新作ダミー作品レビュー

@@ -24,9 +24,9 @@ provider:
 
   targets:
     steps:
-      plan:
+      custom-plan/plan:
         profile: sakura-kimi
-      implement:
+      custom-plan/implement:
         profile: laguna-s
-      review:
+      custom-plan/review:
         profile: nemotron-ultra

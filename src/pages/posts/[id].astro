@@ -51,11 +51,8 @@ const { Content } = await render(post);
         <p>{post.data.description}</p>
       )}
       {post.data.thumbnailUrl && (
-        <img src={post.data.thumbnailUrl} alt={post.data.title} width="300" />
-      )}
-      {post.data.videoUrl && (
         <a href={post.data.videoUrl} target="_blank" rel="noopener">
-          動画を見る
+          <img src={post.data.thumbnailUrl} alt={post.data.title} width="300" />
         </a>
       )}
       {post.data.fanzaUrl && (
