@@ -1,0 +1,36 @@
+# .takt/workflows/custom-plan.yaml
+name: custom-plan
+description: "複数のAIモデルで計画・実装・レビューを行うワークフロー"
+
+initial_step: plan
+max_steps: 10
+
+steps:
+  # 1. 計画ステップ（さくらのAI）
+  - name: plan
+    edit: false
+    instruction: |
+      ユーザーの要求を満たすための、詳細なファイル変更計画・設計方針を立ててください。
+    rules:
+      - condition: "計画完了"
+        next: implement
+
+  # 2. 実装ステップ（poolside）
+  - name: implement
+    edit: true
+    instruction: |
+      計画に従ってコードを実装し、テストを実行・パスさせてください。
+    rules:
+      - condition: "実装完了"
+        next: review
+
+  # 3. レビューステップ（OpenRouter）
+  - name: review
+    edit: false
+    instruction: |
+      実装内容にバグ、エッジケースの考慮漏れ、設計違反がないかコードレビューを行ってください。
+    rules:
+      - condition: "承認"
+        next: COMPLETE
+      - condition: "修正が必要"
+        next: implement

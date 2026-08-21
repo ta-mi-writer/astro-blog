@@ -1,0 +1,32 @@
+# .takt/runtime.yaml
+version: 1
+
+provider:
+  defaults:
+    profile: gemini-flash
+
+  profiles:
+    gemini-flash:
+      provider: pi
+      model: openrouter/google/gemini-3.5-flash-lite:minimal
+    sakura-kimi:
+      provider: pi
+      model: sakura/preview/Kimi-K2.7-Code:high
+    laguna-s:
+      provider: pi
+      model: pool/poolside/laguna-s-2.1:off
+    nemotron-light:
+      provider: pi
+      model: openrouter/nvidia/nemotron-3.5-lightning:free
+    nemotron-ultra:
+      provider: pi
+      model: openrouter/nvidia/nemotron-3-ultra-550b-a55b:free:minimal
+
+  targets:
+    steps:
+      plan:
+        profile: sakura-kimi
+      implement:
+        profile: laguna-s
+      review:
+        profile: nemotron-ultra
