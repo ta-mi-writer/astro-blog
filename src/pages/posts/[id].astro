@@ -1,9 +1,12 @@
 ---
 // ① 'render' をインポートに追加
-import { getCollection, render } from 'astro:content';
+import {
+  getCollection,
+  render,
+} from "astro:content";
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts');
+  const posts = await getCollection("posts");
   return posts.map((post) => ({
     params: { id: post.id },
     props: { post },
@@ -14,12 +17,19 @@ const { post } = Astro.props;
 
 // ② post を render() に渡して <Content /> コンポーネントを取り出す
 const { Content } = await render(post);
+
+// ビルド時のシステム日付から現在の年を取得
+const currentYear = new Date().getFullYear();
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
     <title>{post.data.title}</title>
   </head>
   <body>
@@ -27,47 +37,87 @@ const { Content } = await render(post);
       <h1>{post.data.title}</h1>
       <p>
         公開日:
-        <time datetime={post.data.pubDate.toISOString()}>
-          {post.data.pubDate.toLocaleDateString('ja-JP', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
+        <time
+          datetime={post.data.pubDate.toISOString()}
+        >
+          {
+            post.data.pubDate.toLocaleDateString(
+              "ja-JP",
+              {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              },
+            )
+          }
         </time>
       </p>
-      {post.data.updatedDate && (
-        <p>
-          Updated:
-          <time datetime={post.data.updatedDate.toISOString()}>
-            {post.data.updatedDate.toLocaleDateString('ja-JP', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </time>
-        </p>
-      )}
-      {post.data.description && (
-        <p>{post.data.description}</p>
-      )}
-      {post.data.thumbnailUrl && (
-        <a href={post.data.videoUrl} target="_blank" rel="noopener">
-          <img src={post.data.thumbnailUrl} alt={post.data.title} width="300" />
-        </a>
-      )}
-      {post.data.fanzaUrl && (
-        <a href={post.data.fanzaUrl} target="_blank" rel="noopener">
-          FANZA作品ページ
-        </a>
-      )}
+      {
+        post.data.updatedDate && (
+          <p>
+            Updated:
+            <time
+              datetime={post.data.updatedDate.toISOString()}
+            >
+              {post.data.updatedDate.toLocaleDateString(
+                "ja-JP",
+                {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                },
+              )}
+            </time>
+          </p>
+        )
+      }
+      {
+        post.data.description && (
+          <p>{post.data.description}</p>
+        )
+      }
+      {
+        post.data.thumbnailUrl && (
+          <a
+            href={post.data.videoUrl}
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src={post.data.thumbnailUrl}
+              alt={post.data.title}
+              width="300"
+            />
+          </a>
+        )
+      }
+      {
+        post.data.fanzaUrl && (
+          <a
+            href={post.data.fanzaUrl}
+            target="_blank"
+            rel="noopener"
+          >
+            FANZA作品ページ
+          </a>
+        )
+      }
       <div class="fanza-affiliate">
         <h2>FANZA TVで視聴</h2>
-        <p>FANZA TVに新規登録すると、最初の1ヶ月が無料になるキャンペーンを実施中です。</p>
-        <a href="https://www.fanza-tv.com/signup?aff=example" target="_blank" rel="noopener">
+        <p>
+          FANZA
+          TVに新規登録すると、最初の1ヶ月が無料になるキャンペーンを実施中です。
+        </p>
+        <a
+          href="https://www.fanza-tv.com/signup?aff=example"
+          target="_blank"
+          rel="noopener"
+        >
           FANZA TV無料登録はこちら
         </a>
         <p>
-          当サイトはFANZA TVのアフィリエイトプログラムに参加しています。
+          当サイトはFANZA
+          TVのアフィリエイトプログラムに参加しています。
         </p>
       </div>
 
@@ -76,5 +126,27 @@ const { Content } = await render(post);
         <Content />
       </section>
     </article>
+
+    <footer>
+      <nav aria-label="フッターナビゲーション">
+        <ul>
+          <li>
+            <a href="/disclaimer/">免責事項</a>
+          </li>
+          <li>
+            <a href="/privacy/"
+              >プライバシーポリシー</a
+            >
+          </li>
+          <li><a href="/">ホームに戻る</a></li>
+        </ul>
+      </nav>
+      <p>
+        <small
+          >&copy; {currentYear} ダミーサイト名 All rights
+          reserved.</small
+        >
+      </p>
+    </footer>
   </body>
 </html>
