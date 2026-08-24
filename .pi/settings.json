@@ -2,13 +2,8 @@
   "defaultProvider": "openrouter",
   "defaultModel": "google/gemini-3.5-flash-lite",
   "defaultThinkingLevel": "minimal",
-  "extensions": [
-    "/home/ubuntu/.pi/agent/extensions/herdr-agent-state.ts",
-    "-/home/ubuntu/.pi/agent/extensions/herdr-agent-state.ts"
-  ],
+  "extensions": [],
   "skills": [
-    "/home/ubuntu/.pi/agent/skills/herdr/SKILL.md",
-    "-/home/ubuntu/.pi/agent/skills/herdr/SKILL.md",
     "/home/ubuntu/.agents/skills/hyperframes/SKILL.md",
     "-/home/ubuntu/.agents/skills/hyperframes/SKILL.md",
     "/home/ubuntu/.agents/skills/hyperframes-animation/SKILL.md",
@@ -25,13 +20,7 @@
     "-/home/ubuntu/.agents/skills/hyperframes-registry/SKILL.md",
     "/home/ubuntu/.agents/skills/media-use/SKILL.md",
     "-/home/ubuntu/.agents/skills/media-use/SKILL.md",
-    "-skills/herdr-workflow/SKILL.md",
-    "-skills/herdr-workflow-pane/SKILL.md",
     "-skills/hallmark/SKILL.md"
   ],
-  "prompts": [
-    "-prompts/kimi-new.md",
-    "-prompts/laguna-new.md",
-    "-prompts/rename.md"
-  ]
+  "prompts": []
 }
