@@ -2,6 +2,7 @@
 title: 'Hello World'
 pubDate: 2024-01-15
 description: 'Welcome to my new blog!'
+categories: ['general']
 ---
 # Hello World
 

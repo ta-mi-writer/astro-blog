@@ -20,6 +20,13 @@ const { Content } = await render(post);
 
 // ビルド時のシステム日付から現在の年を取得
 const currentYear = new Date().getFullYear();
+
+const allPosts = await getCollection("posts");
+const categories = [
+  ...new Set(
+    allPosts.flatMap((p) => p.data.categories ?? []),
+  ),
+].sort();
 ---
 
 <!doctype html>
@@ -33,6 +40,22 @@ const currentYear = new Date().getFullYear();
     <title>{post.data.title}</title>
   </head>
   <body>
+    <header>
+      <a href="/">Laguna Blog</a>
+
+      {
+        categories.length > 0 && (
+          <nav aria-label="カテゴリー一覧">
+            <ul>
+              {categories.map((category) => (
+                <li>{category}</li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+    </header>
+
     <article>
       <h1>{post.data.title}</h1>
       <p>

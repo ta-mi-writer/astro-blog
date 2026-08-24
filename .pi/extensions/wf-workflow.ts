@@ -12,12 +12,15 @@
  * 規約:
  *   .pi/workflow/<runId>/           実行ごとのアーティファクト置き場
  *   .pi/workflow/current.json       現在アクティブな run へのポインタ
- *   .pi/workflow/planner-budget.json プランナー使用回数カウンタ（月間3000回）
  */
 
 import * as fs from "node:fs";
 import * as path from "node:path";
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import {
+  defineTool,
+  type ExtensionAPI,
+} from "@earendil-works/pi-coding-agent";
+import { Type } from "typebox";
 
 const WORKFLOW_DIR = path.join(
   process.cwd(),
@@ -28,14 +31,8 @@ const CURRENT_FILE = path.join(
   WORKFLOW_DIR,
   "current.json",
 );
-const BUDGET_FILE = path.join(
-  WORKFLOW_DIR,
-  "planner-budget.json",
-);
-
 const PLANNER_MODEL =
   "sakura/preview/Kimi-K2.7-Code:high";
-const PLANNER_MONTHLY_LIMIT = 3000;
 const CODER_MODEL =
   "pool/poolside/laguna-xs-2.1:off";
 const REVIEWER_MODEL =
@@ -187,30 +184,6 @@ function newRun(): RunState {
   };
 }
 
-/** プランナー予算カウンタを1消費し、残数を返す */
-function consumePlannerBudget(): {
-  used: number;
-  remaining: number;
-} {
-  const month = new Date()
-    .toISOString()
-    .slice(0, 7); // YYYY-MM
-  let budget = readJson<{
-    month: string;
-    used: number;
-  }>(BUDGET_FILE);
-  if (!budget || budget.month !== month) {
-    budget = { month, used: 0 };
-  }
-  budget.used += 1;
-  writeJson(BUDGET_FILE, budget);
-  return {
-    used: budget.used,
-    remaining:
-      PLANNER_MONTHLY_LIMIT - budget.used,
-  };
-}
-
 export default function wfWorkflow(
   pi: ExtensionAPI,
 ) {
@@ -242,7 +215,7 @@ export default function wfWorkflow(
   // ---------------------------------------------------------------
   pi.registerCommand("wf-status", {
     description:
-      "Show workflow phase, artifacts, and planner budget",
+      "Show workflow phase and artifacts",
     handler: async (_args, ctx) => {
       const lines: string[] = [];
 
@@ -273,20 +246,6 @@ export default function wfWorkflow(
         }
       }
 
-      const budget = readJson<{
-        month: string;
-        used: number;
-      }>(BUDGET_FILE);
-      if (budget) {
-        lines.push(
-          `Planner budget (${budget.month}): ${budget.used}/${PLANNER_MONTHLY_LIMIT} used`,
-        );
-      } else {
-        lines.push(
-          `Planner budget: 0/${PLANNER_MONTHLY_LIMIT} used`,
-        );
-      }
-
       ctx.ui.notify(lines.join("\n"), "info");
     },
   });
@@ -304,6 +263,10 @@ export default function wfWorkflow(
   // サブプロセスのコーダーは phase=CODING のときに動くため影響を受けない。
   // ---------------------------------------------------------------
   let guardDisabled = false;
+  // wf_confirm_requirements で承認された後、モデルによる requirements.md 書き出しを許可する
+  let reqApproved = false;
+  // 「書き込んで /wf-plan を実行」が選択された場合、agent_end でプランナーを自動実行する
+  let autoPlanPending = false;
 
   pi.on("tool_call", async (event, ctx) => {
     if (event.toolName !== "edit" && event.toolName !== "write") return;
@@ -316,7 +279,9 @@ export default function wfWorkflow(
       process.cwd(),
       (event.input as any)?.path ?? (event.input as any)?.file_path ?? "",
     );
-    if (targetPath.startsWith(runDir(run) + path.sep)) return;
+    if (targetPath.startsWith(runDir(run) + path.sep)) {
+      if (reqApproved) return; // wf_confirm_requirements で承認済みの場合のみ許可
+    }
 
     return {
       block: true,
@@ -358,9 +323,9 @@ export default function wfWorkflow(
       `このセッションは現在要件定義フェーズです。コードファイルの編集は禁止されています（.pi/workflow/${run.runId}/ 配下を除く）。\n` +
       `- ユーザーとの対話で目的・機能要件・非機能要件・スコープ外事項を明確にするファシリテーターとして振る舞ってください。\n` +
       `- 1回の応答で質問は最大3つまでに抑え、要約を短く保ってください。\n` +
-      `- 対話が進み、これ以上聞くことがないと判断したタイミングで、自ら「要件を requirements.md に書き出しましょうか？」と提案してください。\n` +
-      `- 提案が承認されたら、合意した要件を .pi/workflow/${run.runId}/requirements.md に書き出してください（このパスへの write は許可されています）。\n` +
-      `- 書き出したら「その後 /wf-plan を実行してください」と案内してください。`,
+      `- 対話が進み、これ以上聞くことがないと判断したタイミングで、まず合意した要件の要約をチャットに提示し、その直後に wf_confirm_requirements ツールを呼び出してユーザーに承認を求めてください。\n` +
+      `- ツールの結果メッセージ（APPROVED_WRITE / APPROVED_WRITE_AND_PLAN / DECLINED）の指示に従ってください。書き出し先は .pi/workflow/${run.runId}/requirements.md です。\n` +
+      `- 書き出したら、次は /wf-plan（または自動実行）でプラン作成に進むことを案内してください。`,
     };
   });
 
@@ -569,100 +534,216 @@ export default function wfWorkflow(
         return;
       }
 
-      const budget = readJson<{
-        month: string;
-        used: number;
-      }>(BUDGET_FILE);
-      const usedThisMonth =
-        budget &&
-        budget.month ===
-          new Date().toISOString().slice(0, 7)
-          ? budget.used
-          : 0;
-
-      // 高価なモデルなので、消費前に必ず人間承認を挟む
+      // 高価なモデルなので、実行前に必ず人間承認を挟む
       const ok = await ctx.ui.confirm(
         "/wf-plan",
-        `Consume 1 planner request?\nModel: ${PLANNER_MODEL}\nMonthly usage: ${usedThisMonth}/${PLANNER_MONTHLY_LIMIT}`,
+        `Run the planner model?\nModel: ${PLANNER_MODEL}\n(Actual request count: check Sakura AI Engine dashboard.)`,
       );
       if (!ok) return;
 
-      ctx.ui.setStatus(
-        "wf",
-        "PLANNING (Kimi K2.7 Code)...",
-      );
-
-      const prompt = [
-        "あなたは超詳細な実装プランを作成するプランナーです。",
-        "以下の requirements.md を読み、実装計画 plan.md を Markdown で出力してください。",
-        "",
-        "厳守事項:",
-        "- 実行者は33B params/3B active の小型コーダーモデルです。暗黙の判断は一切できません。",
-        "- 各タスクには「対象ファイルのパス」「対象関数/コンポーネント名」「変更理由」を明記すること。",
-        "- 可能なら変更前後のコード例を示すこと。",
-        "- タスクは番号付きチェックリスト形式にし、各タスクが独立して実行可能な粒度に分割すること。",
-        "- コードは書かず、plan.md の内容のみを出力すること（前置き・後書き不要）。",
-        "- Astro ブログプロジェクト (Astro v5, Content Collections) 向けの計画であることに注意。",
-        "",
-        "--- requirements.md ---",
-        fs.readFileSync(reqPath, "utf8"),
-      ].join("\n");
-
-      try {
-        const result = await pi.exec(
-          "pi",
-          [
-            "-p",
-            "--model",
-            PLANNER_MODEL,
-            prompt,
-          ],
-          { timeout: 600_000 },
-        );
-        if (
-          result.code !== 0 ||
-          !result.stdout?.trim()
-        ) {
-          throw new Error(
-            result.stderr?.slice(0, 500) ||
-              "empty output from planner",
-          );
-        }
-
-        const planPath = path.join(
-          runDir(run),
-          "plan.md",
-        );
-        fs.writeFileSync(
-          planPath,
-          result.stdout.trimEnd() + "\n",
-        );
-
-        run.phase = "CODING";
-        run.updatedAt = new Date().toISOString();
-        writeJson(CURRENT_FILE, run);
-
-        const b = consumePlannerBudget();
-        ctx.ui.setStatus(
-          "wf",
-          `[${run.runId}] ${run.phase}`,
-        );
-        ctx.ui.notify(
-          `plan.md written to ${planPath}\nPlanner usage this month: ${b.used}/${PLANNER_MONTHLY_LIMIT}`,
-          "info",
-        );
-      } catch (err) {
-        ctx.ui.setStatus(
-          "wf",
-          `[${run.runId}] PLAN_FAILED`,
-        );
-        ctx.ui.notify(
-          `/wf-plan failed: ${(err as Error).message}`,
-          "error",
-        );
-      }
+      await runPlanner(ctx, run);
     },
   });
+
+  // ---------------------------------------------------------------
+  // ---------------------------------------------------------------
+  // ---------------------------------------------------------------
+  // wf_confirm_requirements ツール: 要件が固まったと判断したモデルが呼び出す。
+  // 人間承認ゲート（3択セレクタ）を表示し、結果に応じて書き出しを許可する。
+  // ---------------------------------------------------------------
+  const confirmRequirementsTool = defineTool({
+    name: "wf_confirm_requirements",
+    label: "Confirm Requirements",
+    description:
+      "要件定義の対話がまとまったと判断したときに、ユーザーへの承認ゲートを表示するためのツール。",
+    promptGuidelines: [
+      "DISCOVERY フェーズで要件が固まったら、まず合意した要件の要約をチャットに提示し、その直後にこのツールを呼び出してください。",
+      "コードファイルを編集する前や、requirements.md を書き出す前に必ずこのツールを使ってください。",
+    ],
+    parameters: Type.Object({
+      // ⚠ 削除しないこと。未使用だが必須パラメータとして機能している:
+      // モデルがゲートを出す前に要約の生成を構造的に強制するため。
+      // （チャットへのドラフト先行表示を保証する唯一の仕組み）
+      // ダイアログ内表示に使う日までお預け。
+      summary: Type.String({
+        description:
+          "合意した要件の短い要約（ユーザーに確認ダイアログの文脈として表示されます）",
+      }),
+    }),
+
+    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+      const run = getRun();
+      if (!run || run.phase !== "DISCOVERY" || guardDisabled) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: "NOT_IN_DISCOVERY: 現在要件定義フェーズではないため、このツールは使用できません。通常通り応答してください。",
+            },
+          ],
+          details: { choice: "invalid" },
+        };
+      }
+
+      void params.summary; // 将来的にダイアログへ表示する予定
+      const choice = await ctx.ui.select(
+        `要件定義の承認: ${run.runId}`,
+        [
+          "requirements.md に要件定義を書き込む",
+          "requirements.md に書き込んで /wf-plan を実行する（プランナーAPIリクエストを消費します）",
+          "AIとの壁打ちを続ける",
+        ],
+      );
+
+      if (!choice || choice.startsWith("AIとの壁打ち")) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: "DECLINED: ユーザーは壁打ちの続きを希望しています。曖昧な点・未確認の観点について質問し、対話を続けてください。requirements.md はまだ書かないでください。",
+            },
+          ],
+          details: { choice: "continue" },
+        };
+      }
+
+      reqApproved = true;
+
+      if (choice.startsWith("requirements.md に書き込んで")) {
+        autoPlanPending = true;
+        return {
+          content: [
+            {
+              type: "text",
+              text: `APPROVED_WRITE_AND_PLAN: 合意した要件全文を .pi/workflow/${run.runId}/requirements.md に write ツールで書き出してください（構成: 目的/機能要件/非機能要件/スコープ外事項/未確定事項）。書き出したら作業を終了してください。プラン作成は自動的に開始されます。`,
+            },
+          ],
+          details: { choice: "write+plan" },
+        };
+      }
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `APPROVED_WRITE: 合意した要件全文を .pi/workflow/${run.runId}/requirements.md に write ツールで書き出してください（構成: 目的/機能要件/非機能要件/スコープ外事項/未確定事項）。書き出したら、その後 /wf-plan を実行するようユーザーに案内してください。`,
+          },
+        ],
+        details: { choice: "write" },
+      };
+    },
+  });
+  pi.registerTool(confirmRequirementsTool);
+
+  // ---------------------------------------------------------------
+  // agent_end: 「書き込んで /wf-plan を実行」選択時の自動チェーン
+  // ---------------------------------------------------------------
+  pi.on("agent_end", async (_event, ctx) => {
+    if (!autoPlanPending) {
+      reqApproved = false;
+      return;
+    }
+    autoPlanPending = false;
+    reqApproved = false;
+
+    const run = getRun();
+    if (!run || run.phase !== "DISCOVERY") return;
+    if (
+      !fs.existsSync(path.join(runDir(run), "requirements.md"))
+    ) {
+      ctx.ui.notify(
+        "\u26a0 requirements.md が見つからないため /wf-plan を自動実行できませんでした。手動で /wf-plan を実行してください。",
+        "warning",
+      );
+      return;
+    }
+    await runPlanner(ctx, run);
+  });
+
+  async function runPlanner(
+    ctx: any,
+    run: RunState,
+  ): Promise<void> {
+    const reqPath = path.join(
+      runDir(run),
+      "requirements.md",
+    );
+    if (!fs.existsSync(reqPath)) {
+      ctx.ui.notify(
+        `requirements.md not found at ${reqPath}`,
+        "error",
+      );
+      return;
+    }
+
+    ctx.ui.setStatus(
+      "wf",
+      "PLANNING (Kimi K2.7 Code)...",
+    );
+
+    const prompt = [
+      "あなたは超詳細な実装プランを作成するプランナーです。",
+      "以下の requirements.md を読み、実装計画 plan.md を Markdown で出力してください。",
+      "",
+      "厳守事項:",
+      "- 実行者は33B params/3B active の小型コーダーモデルです。暗黙の判断は一切できません。",
+      "- 各タスクには「対象ファイルのパス」「対象関数/コンポーネント名」「変更理由」を明記すること。",
+      "- 可能なら変更前後のコード例を示すこと。",
+      "- タスクは番号付きチェックリスト形式にし、各タスクが独立して実行可能な粒度に分割すること。",
+      "- コードは書かず、plan.md の内容のみを出力すること（前置き・後書き不要）。",
+      "- Astro ブログプロジェクト (Astro v5, Content Collections) 向けの計画であることに注意。",
+      "",
+      "--- requirements.md ---",
+      fs.readFileSync(reqPath, "utf8"),
+    ].join("\n");
+
+    try {
+      const result = await pi.exec(
+        "pi",
+        [
+          "-p",
+          "--model",
+          PLANNER_MODEL,
+          prompt,
+        ],
+        { timeout: 600_000 },
+      );
+      if (
+        result.code !== 0 ||
+        !result.stdout?.trim()
+      ) {
+        throw new Error(
+          result.stderr?.slice(0, 500) ||
+            "empty output from planner",
+        );
+      }
+
+      const planPath = path.join(
+        runDir(run),
+        "plan.md",
+      );
+      fs.writeFileSync(
+        planPath,
+        result.stdout.trimEnd() + "\n",
+      );
+
+      run.phase = "CODING";
+      run.updatedAt = new Date().toISOString();
+      writeJson(CURRENT_FILE, run);
+
+      ctx.ui.setStatus("wf", `[${run.runId}] ${run.phase}`);
+      ctx.ui.notify(`plan.md written to ${planPath}`, "info");
+    } catch (err) {
+      ctx.ui.setStatus(
+        "wf",
+        `[${run.runId}] PLAN_FAILED`,
+      );
+      ctx.ui.notify(
+        `/wf-plan failed: ${(err as Error).message}`,
+        "error",
+      );
+    }
+  }
 
   // ---------------------------------------------------------------
   // /wf-review : レビュアー(laguna-s)で requirements/plan/差分 を検証する
