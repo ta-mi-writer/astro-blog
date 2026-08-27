@@ -1,6 +1,6 @@
 {
   "defaultProvider": "openrouter",
-  "defaultModel": "google/gemini-3.5-flash-lite",
+  "defaultModel": "thinkingmachines/inkling:free",
   "defaultThinkingLevel": "minimal",
   "extensions": [],
   "skills": [

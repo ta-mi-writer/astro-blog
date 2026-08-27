@@ -460,7 +460,8 @@ export default function wfWorkflow(
         "",
         "厳守事項:",
         "- edit / write ツールを使ってコードを実際に変更すること。",
-        "- タスクに書かれていない余計な変更（リファクタ・フォーマット修正等）をしないこと。",
+        "- タスクに書かれていない余計な変更（リファクタ・フォーマット修正・本文テキスト変更等）を一切しないこと（スコープ外変更の禁止）。",
+        "- plan で指定された型前提（例: frontmatter.pubDate は Date オブジェクト）を遵守し、文字列操作（.split() 等）を不必要に行わないこと。",
         "- 実装方法に迷った場合は、より単純で安全な側を選ぶこと。",
         "- 最後に、変更したファイルの一覧のみを出力すること（説明文は不要）。",
         "",
@@ -856,30 +857,16 @@ export default function wfWorkflow(
 
         let summary = `Review complete.${verdict ? ` Verdict: ${verdict}` : "\n⚠ Could not parse VERDICT line from reviewer output — read the full text below."}\n\n${reviewText.slice(-1500)}`;
 
-        if (verdict === "PASS") {
-          run.phase = "DONE";
-        } else if (verdict === "FAIL_CODER") {
-          run.phase = "CODING";
-          fs.writeFileSync(
-            path.join(dir, "review_feedback.md"),
-            reviewText,
-          );
-          summary += `\n\nSaved to review_feedback.md. Next: /wf-code （該当タスク番号を指定して再実行）`;
-        } else if (verdict === "FAIL_PLAN") {
-          run.phase = "PLANNING";
-          fs.writeFileSync(
-            path.join(dir, "review_feedback.md"),
-            reviewText,
-          );
-          summary += `\n\nSaved to review_feedback.md. Next: /wf-plan （⚠ プランナー予算を1消費します）`;
-        } else if (verdict === "FAIL_REQ") {
-          run.phase = "DISCOVERY";
-          fs.writeFileSync(
-            path.join(dir, "review_feedback.md"),
-            reviewText,
-          );
-          summary += `\n\nSaved to review_feedback.md. Next: メインセッションで要件を再検討し requirements.md を更新`;
-        }
+        const now = new Date().toISOString();
+        const header = `\n--- Review: ${now} (VERDICT: ${verdict ?? 'UNKNOWN'}) ---\n`;
+        const existing = fs.existsSync(path.join(dir, "review_feedback.md"))
+          ? fs.readFileSync(path.join(dir, "review_feedback.md"), "utf8")
+          : "";
+        fs.writeFileSync(
+          path.join(dir, "review_feedback.md"),
+          existing + header + reviewText,
+        );
+        summary += `\n\nAppended to review_feedback.md.`;
 
         run.updatedAt = new Date().toISOString();
         writeJson(CURRENT_FILE, run);
