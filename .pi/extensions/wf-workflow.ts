@@ -131,6 +131,27 @@ interface RunState {
   updatedAt: string;
 }
 
+const VERDICT_TO_PHASE: Record<
+  "PASS" | "FAIL_CODER" | "FAIL_PLAN" | "FAIL_REQ",
+  RunState["phase"]
+> = {
+  PASS: "DONE",
+  FAIL_CODER: "CODING",
+  FAIL_PLAN: "PLANNING",
+  FAIL_REQ: "DISCOVERY",
+};
+
+function applyVerdict(
+  run: RunState,
+  verdict: string | null,
+): { changed: boolean; nextPhase?: RunState["phase"] } {
+  if (!verdict) return { changed: false };
+  const nextPhase = VERDICT_TO_PHASE[verdict as keyof typeof VERDICT_TO_PHASE];
+  if (!nextPhase) return { changed: false };
+  run.phase = nextPhase;
+  return { changed: true, nextPhase };
+}
+
 /** Date を日本時間 (UTC+9) の "YYYY-MM-DD-HH-MM-SS" 形式に整形する */
 function jst(date: Date): string {
   const d = new Date(
@@ -855,6 +876,8 @@ export default function wfWorkflow(
         );
         const verdict = verdictMatch?.[1] ?? null;
 
+        applyVerdict(run, verdict);
+
         let summary = `Review complete.${verdict ? ` Verdict: ${verdict}` : "\n⚠ Could not parse VERDICT line from reviewer output — read the full text below."}\n\n${reviewText.slice(-1500)}`;
 
         const now = new Date().toISOString();
@@ -868,6 +891,16 @@ export default function wfWorkflow(
         );
         summary += `\n\nAppended to review_feedback.md.`;
 
+        const nextAction = !verdict
+          ? "\n\nPhase remains REVIEW because VERDICT could not be parsed. Check review_feedback.md."
+          : run.phase === "DONE"
+            ? "\n\nWorkflow reached DONE."
+            : run.phase === "CODING"
+              ? "\n\nReturned to CODING. Re-run /wf-code after addressing the feedback."
+              : run.phase === "PLANNING"
+                ? "\n\nReturned to PLANNING. Re-run /wf-plan after addressing the feedback."
+                : "\n\nReturned to DISCOVERY. Update requirements.md, then /wf-plan.";
+
         run.updatedAt = new Date().toISOString();
         writeJson(CURRENT_FILE, run);
         ctx.ui.setStatus(
@@ -875,7 +908,7 @@ export default function wfWorkflow(
           `[${run.runId}] ${run.phase}`,
         );
         ctx.ui.notify(
-          summary,
+          summary + nextAction,
           verdict === "PASS" ? "info" : "warning",
         );
       } catch (err) {
