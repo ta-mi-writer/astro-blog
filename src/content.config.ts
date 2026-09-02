@@ -7,7 +7,7 @@ const posts = defineCollection({
     title: z.string(),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
-    description: z.string().optional(),
+    description: z.string(),
     thumbnailUrl: z.string().url().optional(),
     videoUrl: z.string().url().optional(),
     fanzaUrl: z.string().url().optional(),

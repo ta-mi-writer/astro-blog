@@ -1,9 +1,5 @@
 ---
-// ① 'render' をインポートに追加
-import {
-  getCollection,
-  render,
-} from "astro:content";
+import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
@@ -14,23 +10,34 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-
-// ② post を render() に渡して <Content /> コンポーネントを取り出す
 const { Content } = await render(post);
 
-// ビルド時のシステム日付から現在の年を取得
 const currentYear = new Date().getFullYear();
+
+// フロントマターの値を整形
+const {
+  title,
+  pubDate,
+  description,
+  thumbnailUrl,
+  videoUrl,
+  fanzaUrl,
+} = post.data;
+
+const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
 ---
 
 <!doctype html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>{post.data.title}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
   </head>
   <body>
     <header>
@@ -38,31 +45,240 @@ const currentYear = new Date().getFullYear();
     </header>
 
     <article>
-      <!-- ③ {post.body} ではなく <Content /> を配置する -->
+      <!-- H1: 作品タイトル -->
+      <h1>{title}</h1>
+      <p>
+        <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+      </p>
+
+      <!-- サムネイル -->
+      <a href={videoUrl}>
+        <img src={thumbnailUrl} alt={`${title} のサムネイル`} />
+      </a>
+
+      <!-- 上部CTA -->
+      <blockquote>
+        <p>
+          <strong>【いますぐ無料で見たい方へ】</strong><br />
+          クリックですぐにサンプルを視聴できます。<br />
+          👉 <a href={videoUrl}><strong>TXXXでサンプルを視聴する</strong></a>
+        </p>
+        <p>
+          <strong>【高画質フル本編を視聴したい方へ】</strong><br />
+          FANZA TVの14日間無料トライアルで0円視聴。<br />
+          👉 <a href={fanzaUrl}><strong>FANZA TVで無料体験する</strong></a>
+        </p>
+      </blockquote>
+
+      <!-- 作品概要 -->
+      <section>
+        <h2>🎬 作品概要</h2>
+        <ul>
+          <li><strong>作品タイトル</strong>: {title}</li>
+          <li><strong>配信日</strong>: {formattedDate}</li>
+          <li>
+            <strong>視聴方法</strong>: TXXX（クリックで視聴）/ FANZA TV（14日間無料トライアル）
+          </li>
+          <li>
+            <strong>無料サンプル</strong>:
+            <a href={videoUrl}>TXXXのサンプルギャラリーで見る</a>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ★ ここに MDX 本文（見どころセクション）を差し込む -->
       <section>
         <Content />
+      </section>
+
+      <!-- 視聴方法比較 -->
+      <section>
+        <h2>🔍 2つの視聴方法を比較</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>TXXX（クリックで視聴）</th>
+              <th>FANZA TV（高画質フル本編）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>登録</th>
+              <td><strong>不要</strong></td>
+              <td>必要（<strong>14日無料</strong>）</td>
+            </tr>
+            <tr>
+              <th>視聴開始</th>
+              <td>クリックで即再生</td>
+              <td>登録後すぐに再生可能</td>
+            </tr>
+            <tr>
+              <th>視聴内容</th>
+              <td>サンプル・ダイジェスト</td>
+              <td><strong>フル本編</strong></td>
+            </tr>
+            <tr>
+              <th>画質</th>
+              <td>標準</td>
+              <td><strong>高画質</strong></td>
+            </tr>
+            <tr>
+              <th>こんな人向き</th>
+              <td>まず雰囲気だけ見たい</td>
+              <td>全部しっかり観たい</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          👉 <a href={videoUrl}><strong>TXXXでいますぐ視聴する</strong></a>
+          /
+          <a href={fanzaUrl}><strong>FANZA TVで14日間無料体験する</strong></a>
+        </p>
+      </section>
+
+      <!-- TXXX詳細 -->
+      <section>
+        <h2>👉 いますぐ視聴したい方は「TXXX」</h2>
+        <p>
+          <strong>クリックだけですぐに視聴開始</strong>。登録も個人情報入力も不要です。
+        </p>
+        <h3>TXXXの特徴</h3>
+        <ul>
+          <li>
+            <strong>登録不要・1クリック再生</strong>: サイトを開いてサムネイルをクリックするだけのシンプル操作
+          </li>
+          <li>
+            <strong>ダイジェストで内容確認</strong>: 本編購入前にまず雰囲気を確かめたい方に最適
+          </li>
+          <li><strong>完全無料</strong>: ギャラリーでのサンプル視聴は0円</li>
+        </ul>
+        <p>
+          👉 <a href={videoUrl}><strong>TXXXでサンプルを視聴する</strong></a>
+        </p>
+      </section>
+
+      <!-- FANZA TV詳細 -->
+      <section>
+        <h2>🎬 高画質フル本編を視聴したい方は「FANZA TV」</h2>
+        <p>
+          FANZA TVは、<strong>14日間の無料トライアル</strong>を提供中。トライアル期間内なら<strong>完全0円</strong>でフル本編を視聴できます。
+        </p>
+
+        <h3>FANZA TV 無料体験の3つのメリット</h3>
+        <ol>
+          <li>
+            <strong>14日間完全無料</strong>: トライアル期間中に解約すれば、<strong>料金は一切発生しません（0円）</strong>
+          </li>
+          <li>
+            <strong>フル本編・高画質</strong>: サンプルではなく、作品を最初から最後まで視聴可能
+          </li>
+          <li>
+            <strong>登録は最短1〜2分</strong>: スマホ・PCどちらからでもすぐ登録して再生できます
+          </li>
+        </ol>
+
+        <h3>14日後どうなるの？自動継続について</h3>
+        <p>
+          14日間の無料トライアルが終了すると、<strong>自動的に有料プラン（月額）へ移行</strong>します。ただし、<strong>14日以内に解約すれば0円</strong>です。<strong>クレジットカードへの請求は一切発生しません。</strong>
+        </p>
+
+        <h3>解約し忘れが心配な方へ</h3>
+        <ul>
+          <li>解約は <strong>マイページから24時間いつでも可能</strong> です</li>
+          <li><strong>14日以内に解約すれば0円</strong>。難しい操作はありません</li>
+          <li>
+            具体的な手順は
+            <a href="/posts/dmm-cancel-guide/"
+              ><strong>FANZA TVの解約ガイド（別記事）</strong></a
+            > で解説しています
+          </li>
+        </ul>
+
+        <h3>登録3ステップ</h3>
+        <ol>
+          <li><a href={fanzaUrl}><strong>FANZA TV公式ページ</strong></a> にアクセス</li>
+          <li>
+            「14日間無料体験を始める」から会員登録（決済情報登録が必要ですが、14日以内なら0円）
+          </li>
+          <li>登録完了後、いますぐ本作のフル本編を再生！</li>
+        </ol>
+
+        <p>
+          👉 <a href={fanzaUrl}><strong>FANZA TVで14日間無料体験する</strong></a>
+        </p>
+      </section>
+
+      <!-- FAQ -->
+      <section>
+        <h2>❓ よくある質問</h2>
+
+        <h3>Q. 本当に完全無料ですか？</h3>
+        <p>
+          <strong>A. はい、14日以内に解約すれば0円</strong>です。FANZA TVは14日間の無料トライアルを提供しており、期間内に解約手続きを行えば、<strong>クレジットカードへの請求は一切発生しません</strong>。
+        </p>
+
+        <h3>Q. 14日後はどうなりますか？</h3>
+        <p>
+          <strong>A. 自動的に有料プラン（月額）に移行</strong>します。<strong>14日以内に解約すれば0円</strong>なので、無料で楽しみたい方は期間内の解約をお忘れなく。
+        </p>
+
+        <h3>Q. 解約はいつでもできますか？</h3>
+        <p>
+          <strong
+            >A. はい、14日トライアル中であっても、24時間いつでも解約可能</strong
+          >です。マイページから数クリックで手続きできます。詳細は
+          <a href="/posts/dmm-cancel-guide/">解約ガイド</a> をご覧ください。
+        </p>
+
+        <h3>Q. 解約し忘れたらどうなりますか？</h3>
+        <p>
+          <strong>A. 月額料金が請求されます</strong>。<strong>14日以内に解約すれば0円</strong>なので、登録後すぐにカレンダーにリマインダーを設定しておくのがおすすめです。
+        </p>
+
+        <h3>Q. 登録に必要なものは？</h3>
+        <p>
+          <strong>A. メールアドレスとクレジットカード</strong>（またはその他の決済方法）です。決済情報が必要なのは、<strong>14日後に自動継続される仕様のため</strong>。トライアル期間中の課金はされません。
+        </p>
+      </section>
+
+      <!-- まとめ -->
+      <section>
+        <h2>🏁 まとめ</h2>
+        <p>本作を楽しむには2つの方法があります：</p>
+        <ul>
+          <li>
+            <strong>いますぐ無料で見たい</strong> →
+            <a href={videoUrl}>TXXX</a> でクリック視聴
+          </li>
+          <li>
+            <strong>高画質フル本編を視聴したい</strong> →
+            <a href={fanzaUrl}>FANZA TV</a> で14日間無料トライアル
+          </li>
+        </ul>
+        <p>
+          <strong>FANZA TVは14日以内に解約すれば0円</strong>。まずは気になる方法で本作をチェックしてみてください。
+        </p>
+
+        <p>
+          👉 <a href={videoUrl}><strong>TXXXでサンプルを視聴する</strong></a>
+        </p>
+        <p>
+          👉 <a href={fanzaUrl}><strong>FANZA TVで14日間無料体験する</strong></a>
+        </p>
       </section>
     </article>
 
     <footer>
       <nav aria-label="フッターナビゲーション">
         <ul>
-          <li>
-            <a href="/disclaimer/">免責事項</a>
-          </li>
-          <li>
-            <a href="/privacy/"
-              >プライバシーポリシー</a
-            >
-          </li>
+          <li><a href="/disclaimer/">免責事項</a></li>
+          <li><a href="/privacy/">プライバシーポリシー</a></li>
           <li><a href="/">ホームに戻る</a></li>
         </ul>
       </nav>
       <p>
-        <small
-          >&copy; {currentYear} ダミーサイト名 All rights
-          reserved.</small
-        >
+        <small>&copy; {currentYear} ダミーサイト名 All rights reserved.</small>
       </p>
     </footer>
   </body>
