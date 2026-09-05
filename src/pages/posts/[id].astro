@@ -22,6 +22,7 @@ const {
   thumbnailUrl,
   videoUrl,
   fanzaUrl,
+  categories,
 } = post.data;
 
 const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
@@ -38,44 +39,63 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="stylesheet" href="/tokens.css" />
   </head>
   <body>
     <header>
-      <a href="/">メルシー艶ログ</a>
+      <div class="container">
+        <a href="/">メルシー艶ログ</a>
+      </div>
     </header>
 
-    <article>
-      <!-- H1: 作品タイトル -->
-      <h1>{title}</h1>
-      <p>
-        <time datetime={pubDate.toISOString()}>{formattedDate}</time>
-      </p>
+    <!-- Marquee Hero -->
+    <div class="marquee-hero">
+      <div class="marquee-container">
+        <h1 class="marquee-title">{title}</h1>
+        <div class="marquee-meta">
+          <span class="marquee-date">{formattedDate}</span>
+          {categories && (
+            <span class="marquee-category">{categories.join(" • ")}</span>
+          )}
+        </div>
+      </div>
+    </div>
 
-      <!-- サムネイル -->
-      <a href={videoUrl}>
-        <img src={thumbnailUrl} alt={`${title} のサムネイル`} />
+    <article>
+      <!-- Thumbnail -->
+      <a href={videoUrl} class="post-thumbnail-wrapper">
+        <img
+          src={thumbnailUrl}
+          alt={`${title} のサムネイル`}
+          class="post-thumbnail"
+          loading="lazy"
+        />
       </a>
 
-      <!-- 上部CTA -->
-      <blockquote>
+      <!-- CTA Block -->
+      <div class="post-cta">
         <p>
           <strong>【いますぐ無料で見たい方へ】</strong><br />
           クリックですぐにサンプルを視聴できます。<br />
           👉 <a href={videoUrl}><strong>TXXXでサンプルを視聴する</strong></a>
         </p>
-        <p>
+        <p class="mt-4">
           <strong>【高画質フル本編を視聴したい方へ】</strong><br />
           FANZA TVの14日間無料トライアルで0円視聴。<br />
           👉 <a href={fanzaUrl}><strong>FANZA TVで無料体験する</strong></a>
         </p>
-      </blockquote>
+      </div>
 
       <!-- 作品概要 -->
-      <section>
-        <h2>🎬 作品概要</h2>
+      <section class="work-overview">
+        <h2>作品概要</h2>
         <ul>
-          <li><strong>作品タイトル</strong>: {title}</li>
-          <li><strong>配信日</strong>: {formattedDate}</li>
+          <li>
+            <strong>作品タイトル</strong>: {title}
+          </li>
+          <li>
+            <strong>配信日</strong>: {formattedDate}
+          </li>
           <li>
             <strong>視聴方法</strong>: TXXX（クリックで視聴）/ FANZA TV（14日間無料トライアル）
           </li>
@@ -87,14 +107,14 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
       </section>
 
       <!-- ★ ここに MDX 本文（見どころセクション）を差し込む -->
-      <section>
+      <section class="content-block">
         <Content />
       </section>
 
       <!-- 視聴方法比較 -->
       <section>
-        <h2>🔍 2つの視聴方法を比較</h2>
-        <table>
+        <h2>2つの視聴方法を比較</h2>
+        <table class="comparison-table">
           <thead>
             <tr>
               <th>項目</th>
@@ -130,7 +150,7 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
             </tr>
           </tbody>
         </table>
-        <p>
+        <p class="mt-6">
           👉 <a href={videoUrl}><strong>TXXXでいますぐ視聴する</strong></a>
           /
           <a href={fanzaUrl}><strong>FANZA TVで14日間無料体験する</strong></a>
@@ -139,7 +159,7 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
 
       <!-- TXXX詳細 -->
       <section>
-        <h2>👉 いますぐ視聴したい方は「TXXX」</h2>
+        <h2>いますぐ視聴したい方は「TXXX」</h2>
         <p>
           <strong>クリックだけですぐに視聴開始</strong>。登録も個人情報入力も不要です。
         </p>
@@ -160,7 +180,7 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
 
       <!-- FANZA TV詳細 -->
       <section>
-        <h2>🎬 高画質フル本編を視聴したい方は「FANZA TV」</h2>
+        <h2>高画質フル本編を視聴したい方は「FANZA TV」</h2>
         <p>
           FANZA TVは、<strong>14日間の無料トライアル</strong>を提供中。トライアル期間内なら<strong>完全0円</strong>でフル本編を視聴できます。
         </p>
@@ -211,42 +231,50 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
 
       <!-- FAQ -->
       <section>
-        <h2>❓ よくある質問</h2>
+        <h2>よくある質問</h2>
 
-        <h3>Q. 本当に完全無料ですか？</h3>
-        <p>
-          <strong>A. はい、14日以内に解約すれば0円</strong>です。FANZA TVは14日間の無料トライアルを提供しており、期間内に解約手続きを行えば、<strong>クレジットカードへの請求は一切発生しません</strong>。
-        </p>
+        <div class="faq-item">
+          <p class="faq-question">Q. 本当に完全無料ですか？</p>
+          <p class="faq-answer">
+            <strong>A. はい、14日以内に解約すれば0円</strong>です。FANZA TVは14日間の無料トライアルを提供しており、期間内に解約手続きを行えば、<strong>クレジットカードへの請求は一切発生しません</strong>。
+          </p>
+        </div>
 
-        <h3>Q. 14日後はどうなりますか？</h3>
-        <p>
-          <strong>A. 自動的に有料プラン（月額）に移行</strong>します。<strong>14日以内に解約すれば0円</strong>なので、無料で楽しみたい方は期間内の解約をお忘れなく。
-        </p>
+        <div class="faq-item">
+          <p class="faq-question">Q. 14日後はどうなりますか？</p>
+          <p class="faq-answer">
+            <strong>A. 自動的に有料プラン（月額）に移行</strong>します。<strong>14日以内に解約すれば0円</strong>なので、無料で楽しみたい方は期間内の解約をお忘れなく。
+          </p>
+        </div>
 
-        <h3>Q. 解約はいつでもできますか？</h3>
-        <p>
-          <strong
-            >A. はい、14日トライアル中であっても、24時間いつでも解約可能</strong
-          >です。マイページから数クリックで手続きできます。詳細は
-          <a href="/posts/dmm-cancel-guide/">解約ガイド</a> をご覧ください。
-        </p>
+        <div class="faq-item">
+          <p class="faq-question">Q. 解約はいつでもできますか？</p>
+          <p class="faq-answer">
+            <strong>A. はい、14日トライアル中であっても、24時間いつでも解約可能</strong>です。マイページから数クリックで手続きできます。詳細は
+            <a href="/posts/dmm-cancel-guide/">解約ガイド</a> をご覧ください。
+          </p>
+        </div>
 
-        <h3>Q. 解約し忘れたらどうなりますか？</h3>
-        <p>
-          <strong>A. 月額料金が請求されます</strong>。<strong>14日以内に解約すれば0円</strong>なので、登録後すぐにカレンダーにリマインダーを設定しておくのがおすすめです。
-        </p>
+        <div class="faq-item">
+          <p class="faq-question">Q. 解約し忘れたらどうなりますか？</p>
+          <p class="faq-answer">
+            <strong>A. 月額料金が請求されます</strong>。<strong>14日以内に解約すれば0円</strong>なので、登録後すぐにカレンダーにリマインダーを設定しておくのがおすすめです。
+          </p>
+        </div>
 
-        <h3>Q. 登録に必要なものは？</h3>
-        <p>
-          <strong>A. メールアドレスとクレジットカード</strong>（またはその他の決済方法）です。決済情報が必要なのは、<strong>14日後に自動継続される仕様のため</strong>。トライアル期間中の課金はされません。
-        </p>
+        <div class="faq-item">
+          <p class="faq-question">Q. 登録に必要なものは？</p>
+          <p class="faq-answer">
+            <strong>A. メールアドレスとクレジットカード</strong>（またはその他の決済方法）です。決済情報が必要なのは、<strong>14日後に自動継続される仕様のため</strong>。トライアル期間中の課金はされません。
+          </p>
+        </div>
       </section>
 
       <!-- まとめ -->
       <section>
-        <h2>🏁 まとめ</h2>
+        <h2>まとめ</h2>
         <p>本作を楽しむには2つの方法があります：</p>
-        <ul>
+        <ul class="summary-list">
           <li>
             <strong>いますぐ無料で見たい</strong> →
             <a href={videoUrl}>TXXX</a> でクリック視聴
@@ -270,16 +298,13 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
     </article>
 
     <footer>
-      <nav aria-label="フッターナビゲーション">
+      <nav>
         <ul>
-          <li><a href="/disclaimer/">免責事項</a></li>
-          <li><a href="/privacy/">プライバシーポリシー</a></li>
-          <li><a href="/">ホームに戻る</a></li>
+          <li><a href="/">トップページに戻る</a></li>
+          <li><a href="/privacy">プライバシーポリシー</a></li>
         </ul>
       </nav>
-      <p>
-        <small>&copy; {currentYear} メルシー艶ログ All rights reserved.</small>
-      </p>
+      <small>&copy; {currentYear} メルシー艶ログ All Rights Reserved.</small>
     </footer>
   </body>
 </html>
