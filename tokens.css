@@ -1,10 +1,11 @@
-/* Hallmark · macrostructure: Editorial / Atmospheric · tone: sensual & refined · anchor hue: plum/crimson */
+/* Hallmark · macrostructure: Marquee Hero · tone: sensual & refined · anchor hue: plum/crimson */
 /* Hallmark · pre-emit critique: P5 H5 E5 S4 R5 V5 */
 
 :root {
   /* Paper & Background - Atmospheric Dark OKLCH */
   --paper-bg: oklch(13% 0.02 210);
-  --paper-bg-elevated: oklch(16% 0.025 210);
+  --paper-bg-translucent: oklch(13% 0.02 210 / 0.85);
+  --paper-bg-elevated-translucent: oklch(19% 0.03 210 / 0.5);
   --paper-bg-surface: oklch(19% 0.03 210);
   --paper-border: oklch(26% 0.015 210);
 
@@ -146,6 +147,11 @@ a:hover {
   color: var(--accent-rose);
 }
 
+a:focus-visible {
+  outline: 2px solid var(--accent-rose);
+  outline-offset: 2px;
+}
+
 strong {
   color: var(--text-primary);
   font-weight: var(--font-weight-semibold);
@@ -163,7 +169,7 @@ header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: oklch(13% 0.02 210 / 0.85);
+  background: var(--paper-bg-translucent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--paper-border);
@@ -292,7 +298,7 @@ article {
     var(--paper-bg-elevated) 100%
   );
   border: 1px solid var(--paper-border);
-  border-left: 3px solid var(--accent-crimson);
+  border-left: none;
   border-radius: var(--radius-md);
   padding: var(--space-6);
   margin: var(--space-6) 0;
@@ -318,6 +324,7 @@ article {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
+  white-space: nowrap;
 }
 
 .post-cta a:hover {
@@ -407,7 +414,7 @@ section:first-of-type {
 }
 
 .comparison-table tbody tr:hover {
-  background: oklch(19% 0.03 210 / 0.5);
+  background: var(--paper-bg-elevated-translucent);
 }
 
 /* Content Block (MDX Body) */
@@ -514,6 +521,14 @@ footer nav a:hover {
 footer small {
   font-size: var(--font-size-xs);
   letter-spacing: var(--tracking-wide);
+}
+
+.post-cta a:first-of-type {
+  color: var(--accent-crimson);
+}
+
+.post-cta a:last-of-type {
+  color: var(--accent-plum);
 }
 
 /* Utilities */

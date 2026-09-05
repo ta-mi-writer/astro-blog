@@ -44,7 +44,9 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
   <body>
     <header>
       <div class="container">
-        <a href="/">メルシー艶ログ</a>
+        <a href="/" aria-label="メルシー艶ログ トップページへ">
+          <img src="/logo.svg" alt="メルシー艶ログ" width="380" height="100" />
+        </a>
       </div>
     </header>
 
@@ -66,9 +68,10 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
       <a href={videoUrl} class="post-thumbnail-wrapper">
         <img
           src={thumbnailUrl}
-          alt={`${title} のサムネイル`}
+          alt={title}
           class="post-thumbnail"
-          loading="lazy"
+          loading="eager"
+          fetchpriority="high"
         />
       </a>
 
@@ -77,12 +80,12 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
         <p>
           <strong>【いますぐ無料で見たい方へ】</strong><br />
           クリックですぐにサンプルを視聴できます。<br />
-          👉 <a href={videoUrl}><strong>TXXXでサンプルを視聴する</strong></a>
+          <a href={videoUrl}><strong>TXXXでサンプルを視聴する</strong></a>
         </p>
         <p class="mt-4">
           <strong>【高画質フル本編を視聴したい方へ】</strong><br />
           FANZA TVの14日間無料トライアルで0円視聴。<br />
-          👉 <a href={fanzaUrl}><strong>FANZA TVで無料体験する</strong></a>
+          <a href={fanzaUrl}><strong>FANZA TVで無料体験する</strong></a>
         </p>
       </div>
 
@@ -151,9 +154,9 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
           </tbody>
         </table>
         <p class="mt-6">
-          👉 <a href={videoUrl}><strong>TXXXでいますぐ視聴する</strong></a>
+          <a href={videoUrl} style="white-space: nowrap;"><strong>TXXXでいますぐ視聴する</strong></a>
           /
-          <a href={fanzaUrl}><strong>FANZA TVで14日間無料体験する</strong></a>
+          <a href={fanzaUrl} style="white-space: nowrap;"><strong>FANZA TVで14日間無料体験する</strong></a>
         </p>
       </section>
 
@@ -174,7 +177,7 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
           <li><strong>完全無料</strong>: ギャラリーでのサンプル視聴は0円</li>
         </ul>
         <p>
-          👉 <a href={videoUrl}><strong>TXXXでサンプルを視聴する</strong></a>
+          <a href={videoUrl}><strong>TXXXでサンプルを視聴する</strong></a>
         </p>
       </section>
 
@@ -225,7 +228,7 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
         </ol>
 
         <p>
-          👉 <a href={fanzaUrl}><strong>FANZA TVで14日間無料体験する</strong></a>
+          <a href={fanzaUrl}><strong>FANZA TVで14日間無料体験する</strong></a>
         </p>
       </section>
 
@@ -289,12 +292,16 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
         </p>
 
         <p>
-          👉 <a href={videoUrl}><strong>TXXXでサンプルを視聴する</strong></a>
+          <a href={videoUrl} style="white-space: nowrap;"><strong>TXXXでサンプルを視聴する</strong></a>
         </p>
         <p>
-          👉 <a href={fanzaUrl}><strong>FANZA TVで14日間無料体験する</strong></a>
+          <a href={fanzaUrl} style="white-space: nowrap;"><strong>FANZA TVで14日間無料体験する</strong></a>
         </p>
       </section>
+
+      <p class="disclaimer" style="font-size: var(--font-size-xs); color: var(--text-muted); margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--paper-border);">
+        ※ 本ページの記載は2026年9月時点の調査に基づきます。FANZA TV の利用規約・料金・特典内容は変更される場合があります。最新情報は各公式サイトでご確認ください。
+      </p>
     </article>
 
     <footer>
