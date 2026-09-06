@@ -30,6 +30,8 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
   month: "long",
   day: "numeric",
 });
+
+const isoDate = new Date(pubDate).toISOString().slice(0, 10);
 ---
 
 <!doctype html>
@@ -47,25 +49,33 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
         <a href="/" aria-label="メルシー艶ログ トップページへ">
           <img src="/logo.svg" alt="メルシー艶ログ" width="380" height="100" />
         </a>
+        <nav class="header-nav" aria-label="セカンダリ">
+          <a href="/">ホーム</a>
+        </nav>
       </div>
     </header>
 
     <!-- Marquee Hero -->
     <div class="marquee-hero">
       <div class="marquee-container">
+        <div class="marquee-eyebrow">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>POST · {isoDate}</span>
+        </div>
         <h1 class="marquee-title">{title}</h1>
         <div class="marquee-meta">
-          <span class="marquee-date">{formattedDate}</span>
+          <span class="marquee-date">📅 {formattedDate}</span>
           {categories && (
-            <span class="marquee-category">{categories.join(" • ")}</span>
+            <span class="marquee-category">{categories.join(" · ")}</span>
           )}
         </div>
+        {description && <p class="marquee-lede">{description}</p>}
       </div>
     </div>
 
     <article>
       <!-- Thumbnail -->
-      <a href={videoUrl} class="post-thumbnail-wrapper">
+      <a href={videoUrl} class="post-thumbnail-wrapper" aria-label="サンプル動画を視聴する">
         <img
           src={thumbnailUrl}
           alt={title}
@@ -73,20 +83,25 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
           loading="eager"
           fetchpriority="high"
         />
+        <div class="thumbnail-overlay">
+          <span class="play-indicator">▶</span>
+          <span class="play-label">サンプルを視聴</span>
+        </div>
       </a>
 
       <!-- CTA Block -->
       <div class="post-cta">
         <p>
           <strong>【いますぐ無料で見たい方へ】</strong><br />
-          クリックですぐにサンプルを視聴できます。<br />
-          <a href={videoUrl}><strong>TXXXでサンプルを視聴する</strong></a>
+          クリックですぐにサンプルを視聴できます。
         </p>
-        <p class="mt-4">
+        <a href={videoUrl}><span>TXXXでサンプルを視聴する</span></a>
+
+        <p class="mt-6">
           <strong>【高画質フル本編を視聴したい方へ】</strong><br />
-          FANZA TVの14日間無料トライアルで0円視聴。<br />
-          <a href={fanzaUrl}><strong>FANZA TVで無料体験する</strong></a>
+          FANZA TVの14日間無料トライアルで0円視聴。
         </p>
+        <a href={fanzaUrl}><span>FANZA TVで無料体験する</span></a>
       </div>
 
       <!-- 作品概要 -->
@@ -94,17 +109,20 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
         <h2>作品概要</h2>
         <ul>
           <li>
-            <strong>作品タイトル</strong>: {title}
+            <strong>タイトル</strong>
+            <span>{title}</span>
           </li>
           <li>
-            <strong>配信日</strong>: {formattedDate}
+            <strong>配信日</strong>
+            <span>{formattedDate}</span>
           </li>
           <li>
-            <strong>視聴方法</strong>: TXXX（クリックで視聴）/ FANZA TV（14日間無料トライアル）
+            <strong>視聴方法</strong>
+            <span>TXXX（クリックで視聴）/ FANZA TV（14日間無料トライアル）</span>
           </li>
           <li>
-            <strong>無料サンプル</strong>:
-            <a href={videoUrl}>TXXXのサンプルギャラリーで見る</a>
+            <strong>無料サンプル</strong>
+            <span><a href={videoUrl}>TXXXのサンプルギャラリーで見る</a></span>
           </li>
         </ul>
       </section>
@@ -153,10 +171,10 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
             </tr>
           </tbody>
         </table>
-        <p class="mt-6">
-          <a href={videoUrl} style="white-space: nowrap;"><strong>TXXXでいますぐ視聴する</strong></a>
-          /
-          <a href={fanzaUrl} style="white-space: nowrap;"><strong>FANZA TVで14日間無料体験する</strong></a>
+        <p class="mt-6 cta-row">
+          <a href={videoUrl} class="ghost-cta" style="white-space: nowrap;"><span>TXXXでいますぐ視聴する</span></a>
+          <span class="cta-sep">/</span>
+          <a href={fanzaUrl} class="ghost-cta" style="white-space: nowrap;"><span>FANZA TVで14日間無料体験する</span></a>
         </p>
       </section>
 
@@ -177,7 +195,7 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
           <li><strong>完全無料</strong>: ギャラリーでのサンプル視聴は0円</li>
         </ul>
         <p>
-          <a href={videoUrl}><strong>TXXXでサンプルを視聴する</strong></a>
+          <a href={videoUrl} class="ghost-cta"><span>TXXXでサンプルを視聴する</span></a>
         </p>
       </section>
 
@@ -228,7 +246,7 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
         </ol>
 
         <p>
-          <a href={fanzaUrl}><strong>FANZA TVで14日間無料体験する</strong></a>
+          <a href={fanzaUrl} class="ghost-cta"><span>FANZA TVで14日間無料体験する</span></a>
         </p>
       </section>
 
@@ -292,14 +310,14 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
         </p>
 
         <p>
-          <a href={videoUrl} style="white-space: nowrap;"><strong>TXXXでサンプルを視聴する</strong></a>
+          <a href={videoUrl} class="ghost-cta" style="white-space: nowrap;"><span>TXXXでサンプルを視聴する</span></a>
         </p>
         <p>
-          <a href={fanzaUrl} style="white-space: nowrap;"><strong>FANZA TVで14日間無料体験する</strong></a>
+          <a href={fanzaUrl} class="ghost-cta" style="white-space: nowrap;"><span>FANZA TVで14日間無料体験する</span></a>
         </p>
       </section>
 
-      <p class="disclaimer" style="font-size: var(--font-size-xs); color: var(--text-muted); margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--paper-border);">
+      <p class="disclaimer">
         ※ 本ページの記載は2026年9月時点の調査に基づきます。FANZA TV の利用規約・料金・特典内容は変更される場合があります。最新情報は各公式サイトでご確認ください。
       </p>
     </article>
@@ -315,3 +333,151 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
     </footer>
   </body>
 </html>
+
+<style>
+  /* === COMPONENT-LOCAL OVERRIDES (Midnight micro-touches) === */
+  .header-nav {
+    display: flex;
+    gap: var(--space-5);
+  }
+
+  .header-nav a {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-ink-3);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wider);
+  }
+
+  .header-nav a:hover {
+    color: var(--color-accent);
+  }
+
+  .marquee-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+  }
+
+  .status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    box-shadow: 0 0 10px var(--color-accent-glow);
+    animation: pulse 2.5s var(--ease-in-out) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .marquee-lede {
+    font-size: var(--text-lg);
+    color: var(--color-ink-2);
+    line-height: 1.6;
+    max-width: 40rem;
+    margin: 0;
+  }
+
+  .thumbnail-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    background: oklch(8% 0.02 240 / 0.4);
+    opacity: 0;
+    transition: opacity var(--dur-normal) var(--ease-out);
+    color: var(--color-ink);
+  }
+
+  .post-thumbnail-wrapper:hover .thumbnail-overlay,
+  .post-thumbnail-wrapper:focus-visible .thumbnail-overlay {
+    opacity: 1;
+  }
+
+  .play-indicator {
+    font-size: var(--text-4xl);
+    color: var(--color-accent);
+    text-shadow: 0 0 20px var(--color-accent-glow);
+  }
+
+  .play-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wider);
+  }
+
+  .ghost-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+    background: transparent;
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-sm);
+    letter-spacing: var(--tracking-wide);
+    transition:
+      background var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out);
+    text-decoration: none;
+  }
+
+  .ghost-cta:hover {
+    background: var(--color-accent);
+    color: var(--color-paper);
+    box-shadow: var(--glow-accent);
+    text-decoration: none;
+  }
+
+  .ghost-cta::after {
+    content: "→";
+    font-family: var(--font-mono);
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .cta-sep {
+    color: var(--color-ink-muted);
+    font-family: var(--font-mono);
+  }
+
+  @media (max-width: 768px) {
+    .header-nav {
+      display: none;
+    }
+
+    .cta-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .cta-sep {
+      display: none;
+    }
+
+    .ghost-cta {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+</style>
