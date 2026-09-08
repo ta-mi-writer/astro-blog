@@ -326,6 +326,7 @@ header img {
   display: block;
   max-height: 25rem;
   width: auto;
+  margin-inline: var(--space-4);
 }
 
 /* === MARQUEE HERO === */
