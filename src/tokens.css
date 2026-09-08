@@ -323,6 +323,7 @@ header a:hover {
 }
 
 header img {
+  display: block;
   max-height: 25rem;
   width: auto;
 }
