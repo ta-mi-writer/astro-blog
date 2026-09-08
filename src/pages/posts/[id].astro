@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from "astro:content";
+import "../../styles/global.css";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
@@ -58,7 +59,7 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
           <span aria-hidden="true"></span>
           <span>POST · {isoDate}</span>
         </div>
-        <h1>{title}</h1>
+        <h1 class="text-9xl font-extrabold">{title}</h1>
         <div>
           <span>📅 {formattedDate}</span>
           {categories && (
