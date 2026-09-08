@@ -44,7 +44,7 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
   </head>
   <body>
     <header>
-      <div class="container">
+      <div>
         <a href="/" aria-label="メルシー艶ログ トップページへ">
           <img src="/logo.svg" alt="メルシー艶ログ" width="380" height="100" />
         </a>
@@ -52,48 +52,47 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
     </header>
 
     <!-- Marquee Hero -->
-    <div class="marquee-hero">
-      <div class="marquee-container">
-        <div class="marquee-eyebrow">
-          <span class="status-dot" aria-hidden="true"></span>
+    <div>
+      <div>
+        <div>
+          <span aria-hidden="true"></span>
           <span>POST · {isoDate}</span>
         </div>
-        <h1 class="marquee-title">{title}</h1>
-        <div class="marquee-meta">
-          <span class="marquee-date">📅 {formattedDate}</span>
+        <h1>{title}</h1>
+        <div>
+          <span>📅 {formattedDate}</span>
           {categories && (
-            <span class="marquee-category">{categories.join(" · ")}</span>
+            <span>{categories.join(" · ")}</span>
           )}
         </div>
-        {description && <p class="marquee-lede">{description}</p>}
+        {description && <p>{description}</p>}
       </div>
     </div>
 
     <article>
       <!-- Thumbnail -->
-      <a href={videoUrl} class="post-thumbnail-wrapper" aria-label="サンプル動画を視聴する">
+      <a href={videoUrl} aria-label="サンプル動画を視聴する">
         <img
           src={thumbnailUrl}
           alt={title}
-          class="post-thumbnail"
           loading="eager"
           fetchpriority="high"
         />
-        <div class="thumbnail-overlay">
-          <span class="play-indicator">▶</span>
-          <span class="play-label">サンプルを視聴</span>
+        <div>
+          <span>▶</span>
+          <span>サンプルを視聴</span>
         </div>
       </a>
 
       <!-- CTA Block -->
-      <div class="post-cta">
+      <div>
         <p>
           <strong>【いますぐ無料で見たい方へ】</strong><br />
           クリックですぐにサンプルを視聴できます。
         </p>
         <a href={videoUrl}><span>TXXXでサンプルを視聴する</span></a>
 
-        <p class="mt-6">
+        <p>
           <strong>【高画質フル本編を視聴したい方へ】</strong><br />
           FANZA TVの14日間無料トライアルで0円視聴。
         </p>
@@ -101,7 +100,7 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
       </div>
 
       <!-- 作品概要 -->
-      <section class="work-overview">
+      <section>
         <h2>作品概要</h2>
         <ul>
           <li>
@@ -124,14 +123,14 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
       </section>
 
       <!-- ★ ここに MDX 本文（見どころセクション）を差し込む -->
-      <section class="content-block">
+      <section>
         <Content />
       </section>
 
       <!-- 視聴方法比較 -->
       <section>
         <h2>2つの視聴方法を比較</h2>
-        <table class="comparison-table">
+        <table>
           <thead>
             <tr>
               <th>項目</th>
@@ -167,10 +166,10 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
             </tr>
           </tbody>
         </table>
-        <p class="mt-6 cta-row">
-          <a href={videoUrl} class="ghost-cta"><span>TXXXでいますぐ視聴する</span></a>
-          <span class="cta-sep">/</span>
-          <a href={fanzaUrl} class="ghost-cta"><span>FANZA TVで14日間無料体験する</span></a>
+        <p>
+          <a href={videoUrl}><span>TXXXでいますぐ視聴する</span></a>
+          <span>/</span>
+          <a href={fanzaUrl}><span>FANZA TVで14日間無料体験する</span></a>
         </p>
       </section>
 
@@ -191,7 +190,7 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
           <li><strong>完全無料</strong>: ギャラリーでのサンプル視聴は0円</li>
         </ul>
         <p>
-          <a href={videoUrl} class="ghost-cta"><span>TXXXでサンプルを視聴する</span></a>
+          <a href={videoUrl}><span>TXXXでサンプルを視聴する</span></a>
         </p>
       </section>
 
@@ -242,7 +241,7 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
         </ol>
 
         <p>
-          <a href={fanzaUrl} class="ghost-cta"><span>FANZA TVで14日間無料体験する</span></a>
+          <a href={fanzaUrl}><span>FANZA TVで14日間無料体験する</span></a>
         </p>
       </section>
 
@@ -250,38 +249,38 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
       <section>
         <h2>よくある質問</h2>
 
-        <div class="faq-item">
-          <p class="faq-question">Q. 本当に完全無料ですか？</p>
-          <p class="faq-answer">
+        <div>
+          <p>Q. 本当に完全無料ですか？</p>
+          <p>
             <strong>A. はい、14日以内に解約すれば0円</strong>です。FANZA TVは14日間の無料トライアルを提供しており、期間内に解約手続きを行えば、<strong>クレジットカードへの請求は一切発生しません</strong>。
           </p>
         </div>
 
-        <div class="faq-item">
-          <p class="faq-question">Q. 14日後はどうなりますか？</p>
-          <p class="faq-answer">
+        <div>
+          <p>Q. 14日後はどうなりますか？</p>
+          <p>
             <strong>A. 自動的に有料プラン（月額）に移行</strong>します。<strong>14日以内に解約すれば0円</strong>なので、無料で楽しみたい方は期間内の解約をお忘れなく。
           </p>
         </div>
 
-        <div class="faq-item">
-          <p class="faq-question">Q. 解約はいつでもできますか？</p>
-          <p class="faq-answer">
+        <div>
+          <p>Q. 解約はいつでもできますか？</p>
+          <p>
             <strong>A. はい、14日トライアル中であっても、24時間いつでも解約可能</strong>です。マイページから数クリックで手続きできます。詳細は
             <a href="/posts/dmm-cancel-guide/">解約ガイド</a> をご覧ください。
           </p>
         </div>
 
-        <div class="faq-item">
-          <p class="faq-question">Q. 解約し忘れたらどうなりますか？</p>
-          <p class="faq-answer">
+        <div>
+          <p>Q. 解約し忘れたらどうなりますか？</p>
+          <p>
             <strong>A. 月額料金が請求されます</strong>。<strong>14日以内に解約すれば0円</strong>なので、登録後すぐにカレンダーにリマインダーを設定しておくのがおすすめです。
           </p>
         </div>
 
-        <div class="faq-item">
-          <p class="faq-question">Q. 登録に必要なものは？</p>
-          <p class="faq-answer">
+        <div>
+          <p>Q. 登録に必要なものは？</p>
+          <p>
             <strong>A. メールアドレスとクレジットカード</strong>（またはその他の決済方法）です。決済情報が必要なのは、<strong>14日後に自動継続される仕様のため</strong>。トライアル期間中の課金はされません。
           </p>
         </div>
@@ -291,7 +290,7 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
       <section>
         <h2>まとめ</h2>
         <p>本作を楽しむには2つの方法があります：</p>
-        <ul class="summary-list">
+        <ul>
           <li>
             <strong>いますぐ無料で見たい</strong> →
             <a href={videoUrl}>TXXX</a> でクリック視聴
@@ -306,14 +305,14 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
         </p>
 
         <p>
-          <a href={videoUrl} class="ghost-cta"><span>TXXXでサンプルを視聴する</span></a>
+          <a href={videoUrl}><span>TXXXでサンプルを視聴する</span></a>
         </p>
         <p>
-          <a href={fanzaUrl} class="ghost-cta"><span>FANZA TVで14日間無料体験する</span></a>
+          <a href={fanzaUrl}><span>FANZA TVで14日間無料体験する</span></a>
         </p>
       </section>
 
-      <p class="disclaimer">
+      <p>
         ※ 本ページの記載は2026年9月時点の調査に基づきます。FANZA TV の利用規約・料金・特典内容は変更される場合があります。最新情報は各公式サイトでご確認ください。
       </p>
     </article>
@@ -329,151 +328,3 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
     </footer>
   </body>
 </html>
-
-<style>
-  /* === COMPONENT-LOCAL OVERRIDES (Midnight micro-touches) === */
-  .header-nav {
-    display: flex;
-    gap: var(--space-5);
-  }
-
-  .header-nav a {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-ink-3);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-wider);
-  }
-
-  .header-nav a:hover {
-    color: var(--color-accent);
-  }
-
-  .marquee-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-accent);
-    letter-spacing: var(--tracking-wider);
-    text-transform: uppercase;
-  }
-
-  .status-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: var(--radius-pill);
-    background: var(--color-accent);
-    box-shadow: 0 0 10px var(--color-accent-glow);
-    animation: pulse 2.5s var(--ease-in-out) infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .marquee-lede {
-    font-size: var(--text-lg);
-    color: var(--color-ink-2);
-    line-height: 1.6;
-    max-width: 40rem;
-    margin: 0;
-  }
-
-  .thumbnail-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-3);
-    background: oklch(8% 0.02 240 / 0.4);
-    opacity: 0;
-    transition: opacity var(--dur-normal) var(--ease-out);
-    color: var(--color-ink);
-  }
-
-  .post-thumbnail-wrapper:hover .thumbnail-overlay,
-  .post-thumbnail-wrapper:focus-visible .thumbnail-overlay {
-    opacity: 1;
-  }
-
-  .play-indicator {
-    font-size: var(--text-4xl);
-    color: var(--color-accent);
-    text-shadow: 0 0 20px var(--color-accent-glow);
-  }
-
-  .play-label {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-wider);
-  }
-
-  .ghost-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-5);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-accent);
-    background: transparent;
-    border: 1px solid var(--color-accent);
-    border-radius: var(--radius-sm);
-    letter-spacing: var(--tracking-wide);
-    transition:
-      background var(--dur-fast) var(--ease-out),
-      color var(--dur-fast) var(--ease-out),
-      box-shadow var(--dur-fast) var(--ease-out);
-    text-decoration: none;
-  }
-
-  .ghost-cta:hover {
-    background: var(--color-accent);
-    color: var(--color-paper);
-    box-shadow: var(--glow-accent);
-    text-decoration: none;
-  }
-
-  .ghost-cta::after {
-    content: "→";
-    font-family: var(--font-mono);
-  }
-
-  .cta-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-4);
-  }
-
-  .cta-sep {
-    color: var(--color-ink-muted);
-    font-family: var(--font-mono);
-  }
-
-  @media (max-width: 768px) {
-    .header-nav {
-      display: none;
-    }
-
-    .cta-row {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .cta-sep {
-      display: none;
-    }
-
-    .ghost-cta {
-      width: 100%;
-      justify-content: space-between;
-    }
-  }
-</style>
