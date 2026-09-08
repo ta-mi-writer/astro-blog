@@ -36,10 +36,10 @@
       --text-primary: oklch(96% 0.005 240);
       --text-secondary: oklch(78% 0.01 240);
       --text-muted: oklch(58% 0.015 240);
-      --accent-cyan: oklch(78% 0.18 210);
-      --accent-cyan-bright: oklch(88% 0.15 195);
-      --accent-cyan-dim: oklch(58% 0.16 215);
-      --accent-blue-deep: oklch(62% 0.18 245);
+      --accent-cyan: oklch(70% 0.18 265);
+      --accent-cyan-bright: oklch(82% 0.13 265);
+      --accent-cyan-dim: oklch(60% 0.22 265);
+      --accent-blue-deep: oklch(50% 0.25 265);
     }
     .title-text {
       font-family: "Shippori Mincho", "Yu Mincho", "Hiragino Mincho ProN", "Source Han Serif", serif;
