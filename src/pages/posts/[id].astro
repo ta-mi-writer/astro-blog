@@ -1,6 +1,5 @@
 ---
 import { getCollection, render } from "astro:content";
-import '../../tokens.css';
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
@@ -169,9 +168,9 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
           </tbody>
         </table>
         <p class="mt-6 cta-row">
-          <a href={videoUrl} class="ghost-cta" style="white-space: nowrap;"><span>TXXXでいますぐ視聴する</span></a>
+          <a href={videoUrl} class="ghost-cta"><span>TXXXでいますぐ視聴する</span></a>
           <span class="cta-sep">/</span>
-          <a href={fanzaUrl} class="ghost-cta" style="white-space: nowrap;"><span>FANZA TVで14日間無料体験する</span></a>
+          <a href={fanzaUrl} class="ghost-cta"><span>FANZA TVで14日間無料体験する</span></a>
         </p>
       </section>
 
@@ -307,10 +306,10 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
         </p>
 
         <p>
-          <a href={videoUrl} class="ghost-cta" style="white-space: nowrap;"><span>TXXXでサンプルを視聴する</span></a>
+          <a href={videoUrl} class="ghost-cta"><span>TXXXでサンプルを視聴する</span></a>
         </p>
         <p>
-          <a href={fanzaUrl} class="ghost-cta" style="white-space: nowrap;"><span>FANZA TVで14日間無料体験する</span></a>
+          <a href={fanzaUrl} class="ghost-cta"><span>FANZA TVで14日間無料体験する</span></a>
         </p>
       </section>
 
