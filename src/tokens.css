@@ -4,6 +4,9 @@
  * Axes: paper-band=dark · display-style=grotesk-sans · accent-hue=cool
  */
 
+/* === FONT IMPORTS === */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
 :root {
   /* === PAPER & BACKGROUND === Deep night-sky palette */
   --color-paper: oklch(8% 0.02 240);
@@ -126,9 +129,6 @@
   --transition-fast: var(--dur-fast) var(--ease-out);
   --transition-normal: var(--dur-normal) var(--ease-out);
 }
-
-/* === FONT IMPORTS === */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
 /* === GLOBAL RESET & BASE === */
 *,

@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from "astro:content";
+import '../../tokens.css';
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
@@ -41,7 +42,6 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="stylesheet" href="/tokens.css" />
   </head>
   <body>
     <header>
