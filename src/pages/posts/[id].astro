@@ -2,6 +2,9 @@
 import { getCollection, render } from "astro:content";
 import "../../styles/global.css";
 import MDXHeading from "../../components/MDXHeading.astro";
+import MDXUl from "../../components/MDXUl.astro";
+import MDXOl from "../../components/MDXOl.astro";
+import MDLi from "../../components/MDXLi.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
@@ -16,6 +19,9 @@ const { Content } = await render(post);
 
 const components = {
   h2: MDXHeading,
+  ul: MDXUl,
+  ol: MDXOl,
+  li: MDLi,
 };
 
 const currentYear = new Date().getFullYear();
