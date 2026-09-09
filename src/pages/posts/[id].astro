@@ -53,7 +53,7 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
     </header>
 
     <!-- Marquee Hero -->
-    <div class="border-b border-slate-800/80 bg-gradient-to-b from-slate-900/50 to-slate-950">
+    <div class="border-b border-slate-800/80 bg-linear-to-b from-slate-900/50 to-slate-950">
       <div class="max-w-3xl mx-auto px-6 py-16 space-y-6">
         <div class="inline-flex items-center gap-2 font-mono text-xs text-indigo-400 tracking-wider uppercase bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
           <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse shadow-[0_0_10px_rgba(129,140,248,0.5)]" aria-hidden="true"></span>
@@ -87,7 +87,7 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
       </a>
 
       <!-- CTA Block -->
-      <div class="bg-gradient-to-br from-slate-900 to-slate-900/60 border border-slate-800/80 rounded-2xl p-8 space-y-6 shadow-xl relative overflow-hidden">
+      <div class="bg-linear-to-br from-slate-900 to-slate-900/60 border border-slate-800/80 rounded-2xl p-8 space-y-6 shadow-xl relative overflow-hidden">
         <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none"></div>
         <div class="space-y-2">
           <p class="text-slate-200">
@@ -112,20 +112,20 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
           <span class="w-1.5 h-6 bg-indigo-500 rounded-full"></span>作品概要
         </h2>
         <ul class="space-y-4 text-slate-300">
-          <li class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-slate-800/60 gap-1">
-            <strong class="text-slate-400 font-mono text-sm">タイトル</strong>
+          <li class="flex flex-col sm:flex-row sm:gap-4 py-2 border-b border-slate-800/60 gap-1">
+            <strong class="text-slate-400 font-mono text-sm sm:w-32 sm:flex-shrink-0">タイトル</strong>
             <span class="text-white font-medium">{title}</span>
           </li>
-          <li class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-slate-800/60 gap-1">
-            <strong class="text-slate-400 font-mono text-sm">配信日</strong>
+          <li class="flex flex-col sm:flex-row sm:gap-4 py-2 border-b border-slate-800/60 gap-1">
+            <strong class="text-slate-400 font-mono text-sm sm:w-32 sm:flex-shrink-0">配信日</strong>
             <span class="text-white font-medium">{formattedDate}</span>
           </li>
-          <li class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-slate-800/60 gap-1">
-            <strong class="text-slate-400 font-mono text-sm">視聴方法</strong>
+          <li class="flex flex-col sm:flex-row sm:gap-4 py-2 border-b border-slate-800/60 gap-1">
+            <strong class="text-slate-400 font-mono text-sm sm:w-32 sm:flex-shrink-0">視聴方法</strong>
             <span class="text-white font-medium">TXXX（クリックで視聴）/ FANZA TV（14日間無料トライアル）</span>
           </li>
-          <li class="flex flex-col sm:flex-row sm:justify-between py-2 gap-1">
-            <strong class="text-slate-400 font-mono text-sm">無料サンプル</strong>
+          <li class="flex flex-col sm:flex-row sm:gap-4 py-2 gap-1">
+            <strong class="text-slate-400 font-mono text-sm sm:w-32 sm:flex-shrink-0">無料サンプル</strong>
             <span><a href={videoUrl} class="text-indigo-400 hover:underline">TXXXのサンプルギャラリーで見る</a></span>
           </li>
         </ul>
