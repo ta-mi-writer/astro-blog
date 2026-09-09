@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import "../../styles/global.css";
+import MDXHeading from "../../components/MDXHeading.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
@@ -12,6 +13,10 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+
+const components = {
+  h2: MDXHeading,
+};
 
 const currentYear = new Date().getFullYear();
 
@@ -132,8 +137,8 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
       </section>
 
       <!-- ★ ここに MDX 本文（見どころセクション）を差し込む -->
-      <section class="prose prose-invert max-w-none text-slate-300 space-y-6 leading-relaxed">
-        <Content />
+      <section class="text-slate-300 space-y-6 leading-relaxed">
+        <Content components={components} />
       </section>
 
       <!-- 視聴方法比較 -->
