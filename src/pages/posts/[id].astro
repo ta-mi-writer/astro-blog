@@ -71,10 +71,10 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
           <span>POST · {isoDate}</span>
         </div>
         <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">{title}</h1>
-        <div class="flex flex-wrap items-center gap-4 text-sm text-slate-400 font-mono">
-          {categories && (
-            <span class="text-indigo-300 bg-indigo-950/60 px-2.5 py-0.5 rounded border border-indigo-800/50">{categories.join(" · ")}</span>
-          )}
+        <div class="flex flex-wrap items-center gap-2 text-sm text-slate-400 font-mono">
+          {categories && categories.map((category) => (
+            <span class="text-indigo-300 bg-indigo-950/60 px-2.5 py-0.5 rounded border border-indigo-800/50">{category}</span>
+          ))}
         </div>
         {description && <p class="text-lg text-slate-300 leading-relaxed max-w-2xl">{description}</p>}
       </div>
