@@ -1,6 +1,6 @@
 ---
 const props = Astro.props;
 ---
-<li class="leading-relaxed" {...props}>
+<li class="leading-relaxed [&>strong]:text-white [&>strong]:font-semibold [&>strong]:text-lg" {...props}>
   <slot />
 </li>
