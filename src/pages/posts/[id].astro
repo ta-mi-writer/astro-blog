@@ -110,7 +110,7 @@ const description = `「${trimmedTitle}」の動画を無料視聴！${domainNam
             <strong class="text-white font-semibold">【いますぐ無料で見たい方へ】</strong><br />
             クリックですぐにサンプルを視聴できます。
           </p>
-          <a href={videoUrl} class="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 font-mono text-sm font-medium text-slate-900 bg-indigo-400 hover:bg-indigo-300 rounded-xl transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30">{domainName ? `${domainName}でサンプル試聴` : "TXXXでサンプルを視聴する"} →</a>
+          <a href={videoUrl} class="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 font-mono text-sm font-medium text-slate-900 bg-indigo-400 hover:bg-indigo-300 rounded-xl transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30">{domainName ? `${domainName}でサンプル試聴` : "サンプルを視聴する"} →</a>
         </div>
 
         <div class="border-t border-slate-800/80 pt-6 space-y-2">
@@ -138,11 +138,11 @@ const description = `「${trimmedTitle}」の動画を無料視聴！${domainNam
           </li>
           <li class="flex flex-col sm:flex-row sm:gap-4 py-2 border-b border-slate-800/60 gap-1">
             <strong class="text-slate-400 font-mono text-sm sm:w-32 sm:shrink-0">視聴方法</strong>
-            <span class="text-white font-medium">TXXX（クリックで視聴）/ FANZA TV（14日間無料トライアル）</span>
+            <span class="text-white font-medium">{domainName ? `${domainName}（クリックで視聴）` : "動画サイト（クリックで視聴）"}/ FANZA TV（14日間無料トライアル）</span>
           </li>
           <li class="flex flex-col sm:flex-row sm:gap-4 py-2 gap-1">
             <strong class="text-slate-400 font-mono text-sm sm:w-32 sm:shrink-0">無料サンプル</strong>
-            <span><a href={videoUrl} class="text-indigo-400 hover:underline">{domainName ? `${domainName}でサンプルを視聴` : "TXXXのサンプルギャラリーで見る"}</a></span>
+            <span><a href={videoUrl} class="text-indigo-400 hover:underline">{domainName ? `${domainName}でサンプルを視聴` : "動画サイトのサンプルギャラリーで見る"}</a></span>
           </li>
         </ul>
       </section>
@@ -162,7 +162,7 @@ const description = `「${trimmedTitle}」の動画を無料視聴！${domainNam
             <thead class="bg-slate-900 text-xs uppercase font-mono text-slate-400 border-b border-slate-800">
               <tr>
                 <th class="px-6 py-4">項目</th>
-                <th class="px-6 py-4">TXXX（クリックで視聴）</th>
+                <th class="px-6 py-4">{domainName ? `${domainName}（クリックで視聴）` : "動画サイト（クリックで視聴）"}</th>
                 <th class="px-6 py-4">FANZA TV（高画質フル本編）</th>
               </tr>
             </thead>
@@ -196,21 +196,21 @@ const description = `「${trimmedTitle}」の動画を無料視聴！${domainNam
           </table>
         </div>
         <div class="flex flex-wrap items-center gap-4 pt-2">
-          <a href={videoUrl} class="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-sm text-indigo-400 border border-indigo-500/40 rounded-xl hover:bg-indigo-500/10 transition-all"><span>{domainName ? `${domainName}でサンプル試聴` : "TXXXでいますぐ視聴する"} →</span></a>
+          <a href={videoUrl} class="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-sm text-indigo-400 border border-indigo-500/40 rounded-xl hover:bg-indigo-500/10 transition-all"><span>{domainName ? `${domainName}でサンプル試聴` : "動画サイトでいますぐ視聴する"} →</span></a>
           <span class="text-slate-600 font-mono">/</span>
           <a href={fanzaUrl} class="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-sm text-indigo-400 border border-indigo-500/40 rounded-xl hover:bg-indigo-500/10 transition-all"><span>FANZA TVで14日間無料体験する →</span></a>
         </div>
       </section>
 
-      <!-- TXXX詳細 -->
+      <!-- 動画サイトの詳細 -->
       <section class="space-y-6">
         <h2 class="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
-          <span class="w-1.5 h-6 bg-indigo-500 rounded-full"></span>いますぐ視聴したい方は「TXXX」
+          <span class="w-1.5 h-6 bg-indigo-500 rounded-full"></span>いますぐ視聴したい方は「{domainName ? domainName : "動画サイト"}」
         </h2>
         <p class="text-slate-300 leading-relaxed">
           <strong class="text-white">クリックだけですぐに視聴開始</strong>。登録も個人情報入力も不要です。
         </p>
-        <h3 class="text-xl font-semibold text-white pt-2">TXXXの特徴</h3>
+        <h3 class="text-xl font-semibold text-white pt-2">{domainName ? `${domainName}の特徴` : "動画サイトの特徴"}</h3>
         <ul class="space-y-3 text-slate-300 list-disc list-inside">
           <li class="leading-relaxed">
             <strong class="text-white font-medium">登録不要・1クリック再生</strong>: サイトを開いてサムネイルをクリックするだけのシンプル操作
@@ -221,7 +221,7 @@ const description = `「${trimmedTitle}」の動画を無料視聴！${domainNam
           <li class="leading-relaxed"><strong class="text-white font-medium">完全無料</strong>: ギャラリーでのサンプル視聴は0円</li>
         </ul>
         <div class="pt-4">
-          <a href={videoUrl} class="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-sm text-indigo-400 border border-indigo-500/40 rounded-xl hover:bg-indigo-500/10 transition-all"><span>TXXXでサンプルを視聴する →</span></a>
+          <a href={videoUrl} class="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-sm text-indigo-400 border border-indigo-500/40 rounded-xl hover:bg-indigo-500/10 transition-all"><span>{domainName ? `${domainName}でサンプルを視聴する` : "動画サイトでサンプルを視聴する"} →</span></a>
         </div>
       </section>
 
@@ -330,7 +330,7 @@ const description = `「${trimmedTitle}」の動画を無料視聴！${domainNam
         <ul class="space-y-3 text-slate-300 list-disc list-inside">
           <li class="leading-relaxed">
             <strong class="text-white">いますぐ無料で見たい</strong> →
-            <a href={videoUrl} class="text-indigo-400 hover:underline">TXXX</a> でクリック視聴
+            <a href={videoUrl} class="text-indigo-400 hover:underline">{domainName ? domainName : "動画サイト"}</a> でクリック視聴
           </li>
           <li class="leading-relaxed">
             <strong class="text-white">高画質フル本編を視聴したい</strong> →
@@ -342,7 +342,7 @@ const description = `「${trimmedTitle}」の動画を無料視聴！${domainNam
         </p>
 
         <div class="pt-4 flex flex-col sm:flex-row gap-4">
-          <a href={videoUrl} class="inline-flex items-center justify-center px-6 py-3 font-mono text-sm font-medium text-slate-900 bg-indigo-400 hover:bg-indigo-300 rounded-xl transition-all shadow-lg shadow-indigo-500/20">TXXXでサンプルを視聴する →</a>
+          <a href={videoUrl} class="inline-flex items-center justify-center px-6 py-3 font-mono text-sm font-medium text-slate-900 bg-indigo-400 hover:bg-indigo-300 rounded-xl transition-all shadow-lg shadow-indigo-500/20">{domainName ? `${domainName}でサンプルを視聴する` : "動画サイトでサンプルを視聴する"} →</a>
           <a href={fanzaUrl} class="inline-flex items-center justify-center px-6 py-3 font-mono text-sm font-medium text-white bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-700 transition-all">FANZA TVで14日間無料体験する →</a>
         </div>
       </section>
