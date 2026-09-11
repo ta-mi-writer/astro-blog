@@ -30,7 +30,6 @@ const currentYear = new Date().getFullYear();
 const {
   title,
   pubDate,
-  description,
   thumbnailUrl,
   videoUrl,
   fanzaUrl,
@@ -48,6 +47,8 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
 // videoUrl から https:// と .com の間の文字列を抽出して大文字化
 const domainMatch = videoUrl ? videoUrl.match(/https:\/\/([^\.]+)\.com/) : null;
 const domainName = domainMatch ? domainMatch[1].toUpperCase() : "";
+const trimmedTitle = title.length > 25 ? title.slice(0, 25) + "…" : title;
+const description = `「${trimmedTitle}」の動画を無料視聴！${domainName}で長尺サンプル、FANZA TVの無料トライアルなら高画質フルを0円で視聴できます。`;
 ---
 
 <!doctype html>
