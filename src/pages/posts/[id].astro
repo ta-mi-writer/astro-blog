@@ -44,6 +44,10 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
 });
 
 const isoDate = new Date(pubDate).toISOString().slice(0, 10);
+
+// videoUrl から https:// と .com の間の文字列を抽出して大文字化
+const domainMatch = videoUrl ? videoUrl.match(/https:\/\/([^\.]+)\.com/) : null;
+const domainName = domainMatch ? domainMatch[1].toUpperCase() : "";
 ---
 
 <!doctype html>
@@ -93,7 +97,7 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
         />
         <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3 text-white backdrop-blur-[2px]">
           <span class="text-5xl text-indigo-400 drop-shadow-[0_0_15px_rgba(129,140,248,0.5)]">▶</span>
-          <span class="font-mono text-sm tracking-wider uppercase font-semibold">サンプルを視聴</span>
+          <span class="font-mono text-sm tracking-wider uppercase font-semibold">{domainName ? `${domainName}でサンプルを視聴` : "サンプルを視聴"}</span>
         </div>
       </a>
 
@@ -105,7 +109,7 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
             <strong class="text-white font-semibold">【いますぐ無料で見たい方へ】</strong><br />
             クリックですぐにサンプルを視聴できます。
           </p>
-          <a href={videoUrl} class="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 font-mono text-sm font-medium text-slate-900 bg-indigo-400 hover:bg-indigo-300 rounded-xl transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30">TXXXでサンプルを視聴する →</a>
+          <a href={videoUrl} class="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 font-mono text-sm font-medium text-slate-900 bg-indigo-400 hover:bg-indigo-300 rounded-xl transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30">{domainName ? `${domainName}でサンプル試聴` : "TXXXでサンプルを視聴する"} →</a>
         </div>
 
         <div class="border-t border-slate-800/80 pt-6 space-y-2">
@@ -137,7 +141,7 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
           </li>
           <li class="flex flex-col sm:flex-row sm:gap-4 py-2 gap-1">
             <strong class="text-slate-400 font-mono text-sm sm:w-32 sm:shrink-0">無料サンプル</strong>
-            <span><a href={videoUrl} class="text-indigo-400 hover:underline">TXXXのサンプルギャラリーで見る</a></span>
+            <span><a href={videoUrl} class="text-indigo-400 hover:underline">{domainName ? `${domainName}でサンプルを視聴` : "TXXXのサンプルギャラリーで見る"}</a></span>
           </li>
         </ul>
       </section>
@@ -191,7 +195,7 @@ const isoDate = new Date(pubDate).toISOString().slice(0, 10);
           </table>
         </div>
         <div class="flex flex-wrap items-center gap-4 pt-2">
-          <a href={videoUrl} class="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-sm text-indigo-400 border border-indigo-500/40 rounded-xl hover:bg-indigo-500/10 transition-all"><span>TXXXでいますぐ視聴する →</span></a>
+          <a href={videoUrl} class="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-sm text-indigo-400 border border-indigo-500/40 rounded-xl hover:bg-indigo-500/10 transition-all"><span>{domainName ? `${domainName}でサンプル試聴` : "TXXXでいますぐ視聴する"} →</span></a>
           <span class="text-slate-600 font-mono">/</span>
           <a href={fanzaUrl} class="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-sm text-indigo-400 border border-indigo-500/40 rounded-xl hover:bg-indigo-500/10 transition-all"><span>FANZA TVで14日間無料体験する →</span></a>
         </div>
