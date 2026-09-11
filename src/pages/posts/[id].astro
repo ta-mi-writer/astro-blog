@@ -60,17 +60,18 @@ const description = `「${trimmedTitle}」の動画を無料視聴！${domainNam
     <meta name="description" content={description} />
   </head>
   <body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
-    <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
-      <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+    <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
+      <div class="max-w-4xl mx-auto px-6 py-2 flex items-center justify-center md:justify-start">
         <a href="/" aria-label="メルシー艶ログ トップページへ" class="transition-opacity hover:opacity-80">
-          <img src="/logo.svg" alt="メルシー艶ログ" width="220" height="60" class="h-10 w-auto" />
+          <img src="/logo-text.svg" alt="メルシー艶ログ" class="h-12 w-auto block md:hidden" />
+          <img src="/logo.svg" alt="メルシー艶ログ" class="h-16 w-auto hidden md:block" />
         </a>
       </div>
     </header>
 
     <!-- Marquee Hero -->
     <div class="border-b border-slate-800/80 bg-linear-to-b from-slate-900/50 to-slate-950">
-      <div class="max-w-3xl mx-auto px-6 py-16 space-y-6">
+      <div class="max-w-3xl mx-auto px-6 py-6 md:py-16 space-y-6">
         <div class="inline-flex items-center gap-2 font-mono text-xs text-indigo-400 tracking-wider uppercase bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
           <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse shadow-[0_0_10px_rgba(129,140,248,0.5)]" aria-hidden="true"></span>
           <span>POST · {isoDate}</span>
