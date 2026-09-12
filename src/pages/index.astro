@@ -1,97 +1,104 @@
 ---
 import { getCollection } from 'astro:content';
-import '../tokens.css';
+import '../styles/global.css';
 
 const posts = await getCollection('posts');
 const sortedPosts = posts.sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
+
+const currentYear = new Date().getFullYear();
 ---
-<html lang="en">
+
+<!doctype html>
+<html lang="ja">
   <head>
-    <meta charset="utf-8" />
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="/favicon.svg"
-    />
-    <link rel="icon" href="/favicon.ico" />
-    <meta
-      name="viewport"
-      content="width=device-width"
-    />
-    <meta
-      name="generator"
-      content={Astro.generator}
-    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>メルシー艶ログ</title>
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
   </head>
-  <body>
-    <h1>メルシー艶ログ</h1>
-    <main>
-      <h2>Posts</h2>
-      {
-        sortedPosts.length === 0 ? (
-          <p>No posts yet.</p>
-        ) : (
-          <ul>
-            {sortedPosts.map((post) => (
-              <li>
-                <a href={`/posts/${post.id}/`}>{post.data.title}</a>
-                {' '}
-                <time datetime={post.data.pubDate.toISOString()}>
-                  {post.data.pubDate.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </time>
-              </li>
-            ))}
-          </ul>
-        )
-      }
+  <body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+    <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
+      <div class="max-w-4xl mx-auto px-6 py-2 flex items-center justify-center md:justify-start">
+        <a href="/" aria-label="メルシー艶ログ トップページへ" class="transition-opacity hover:opacity-80">
+          <img src="/logo-text.svg" alt="メルシー艶ログ" class="h-12 w-auto block md:hidden" />
+          <img src="/logo.svg" alt="メルシー艶ログ" class="h-16 w-auto hidden md:block" />
+        </a>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <div class="max-w-4xl mx-auto px-6 py-12 md:py-20 space-y-12">
+        <div class="space-y-4">
+          <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">メルシー艶ログ</h1>
+          <p class="text-lg text-slate-400 max-w-2xl">最新の作品情報と視聴ガイドをお届けします。</p>
+        </div>
+
+        <section class="space-y-8">
+          <h2 class="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
+            <span class="w-1.5 h-6 bg-indigo-500 rounded-full"></span>最新投稿
+          </h2>
+
+          {sortedPosts.length === 0 ? (
+            <p class="text-slate-400">投稿はまだありません。</p>
+          ) : (
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {sortedPosts.map((post) => {
+                const formattedDate = new Date(post.data.pubDate).toLocaleDateString('ja-JP', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                });
+                const summaryText = post.body ? post.body.slice(0, 120).trim() + '…' : '詳細を読む';
+                return (
+                  <a
+                    href={`/posts/${post.id}/`}
+                    class="group block bg-slate-900/40 border border-slate-800/60 rounded-2xl overflow-hidden hover:border-indigo-500/50 shadow-xl transition-all duration-300 hover:shadow-indigo-500/10 hover:-translate-y-1"
+                  >
+                    <div class="aspect-video overflow-hidden relative">
+                      {post.data.thumbnailUrl ? (
+                        <img
+                          src={post.data.thumbnailUrl}
+                          alt={post.data.title}
+                          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div class="w-full h-full bg-slate-800 flex items-center justify-center text-slate-600 text-sm font-mono">No Image</div>
+                      )}
+                    </div>
+                    <div class="p-6 space-y-3">
+                      <div class="flex items-center gap-2 font-mono text-xs text-indigo-400 tracking-wider uppercase">
+                        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse shadow-[0_0_10px_rgba(129,140,248,0.5)]" aria-hidden="true"></span>
+                        <time datetime={post.data.pubDate.toISOString()}>{formattedDate}</time>
+                      </div>
+                      <h3 class="text-xl font-bold text-white leading-snug group-hover:text-indigo-300 transition-colors">{post.data.title}</h3>
+                      <p class="text-sm text-slate-400 leading-relaxed line-clamp-3">
+                        {summaryText}
+                      </p>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      </div>
     </main>
+
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-12 px-6 mt-20">
+      <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-sm text-slate-400">
+        <nav>
+          <ul class="flex items-center gap-6 font-mono text-xs">
+            <li><a href="/" class="hover:text-indigo-400 transition-colors">トップページに戻る</a></li>
+            <li><a href="/privacy" class="hover:text-indigo-400 transition-colors">プライバシーポリシー</a></li>
+          </ul>
+        </nav>
+        <small class="font-mono text-xs">&copy; {currentYear} メルシー艶ログ All Rights Reserved.</small>
+      </div>
+    </footer>
   </body>
 </html>
-
-<style>
-  main {
-    max-width: 48rem;
-    margin: 0 auto;
-    padding: var(--space-9) var(--space-4);
-  }
-
-  ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    margin-top: var(--space-5);
-    margin-left: 0;
-  }
-
-  li {
-    padding: var(--space-4);
-    background: var(--color-paper-2);
-    border: 1px solid var(--color-paper-border);
-    border-radius: var(--radius-md);
-    transition:
-      border-color var(--dur-fast) var(--ease-out),
-      box-shadow var(--dur-fast) var(--ease-out);
-  }
-
-  li:hover {
-    border-color: var(--color-accent);
-    box-shadow: var(--glow-accent-soft);
-  }
-
-  time {
-    display: block;
-    margin-top: var(--space-2);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-ink-3);
-    letter-spacing: var(--tracking-wide);
-  }
-</style>
