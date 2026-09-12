@@ -34,6 +34,7 @@ const {
   videoUrl,
   fanzaUrl,
   categories,
+  updatedDate,
 } = post.data;
 
 const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
@@ -43,6 +44,7 @@ const formattedDate = new Date(pubDate).toLocaleDateString("ja-JP", {
 });
 
 const isoDate = new Date(pubDate).toISOString().slice(0, 10);
+const updatedIsoDate = updatedDate ? new Date(updatedDate).toISOString().slice(0, 10) : null;
 
 // videoUrl から https:// と .com の間の文字列を抽出して大文字化
 const domainMatch = videoUrl ? videoUrl.match(/https:\/\/([^\.]+)\.com/) : null;
@@ -72,9 +74,17 @@ const description = `「${trimmedTitle}」の動画を無料視聴！${domainNam
     <!-- Marquee Hero -->
     <div class="border-b border-slate-800/80 bg-linear-to-b from-slate-900/50 to-slate-950">
       <div class="max-w-3xl mx-auto px-6 py-6 md:py-16 space-y-6">
-        <div class="inline-flex items-center gap-2 font-mono text-xs text-indigo-400 tracking-wider uppercase bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
-          <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse shadow-[0_0_10px_rgba(129,140,248,0.5)]" aria-hidden="true"></span>
-          <span>POST · {isoDate}</span>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="inline-flex items-center gap-2 font-mono text-xs text-indigo-400 tracking-wider uppercase bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
+            <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse shadow-[0_0_10px_rgba(129,140,248,0.5)]" aria-hidden="true"></span>
+            POST · {isoDate}
+          </span>
+          {updatedIsoDate && (
+            <span class="inline-flex items-center gap-2 font-mono text-xs text-emerald-400 tracking-wider uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.5)]" aria-hidden="true"></span>
+              UPDATE · {updatedIsoDate}
+            </span>
+          )}
         </div>
         <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">{title}</h1>
         <div class="flex flex-wrap items-center gap-2 text-sm text-slate-400 font-mono">
