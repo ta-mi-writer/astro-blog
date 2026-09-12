@@ -51,7 +51,9 @@ const currentYear = new Date().getFullYear();
                   month: 'long',
                   day: 'numeric',
                 });
-                const summaryText = post.body ? post.body.slice(0, 120).trim() + '…' : '詳細を読む';
+                const rawBody = post.body || '';
+                const cleanBody = rawBody.replace(/<[^>]*>?/gm, '').replace(/^#+\s+/gm, '').replace(/^[-\*]\s+/gm, '').replace(/\*\*/g, '').trim();
+                const summaryText = cleanBody ? cleanBody.slice(0, 120) + '…' : '詳細を読む';
                 return (
                   <a
                     href={`/posts/${post.id}/`}
